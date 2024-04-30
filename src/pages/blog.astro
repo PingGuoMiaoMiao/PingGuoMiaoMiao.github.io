@@ -1,26 +1,27 @@
 ---
 const pagestitle = "我的 Astro 站点";
+import '../styles/global.css';
 ---
 
 <html lang="zh-cn">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" type ="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width" />
-    <meta name="generator" content = {Astro.generator} >
-    <title>Astro</title>
-  </head>
-  <body>
-    <a href="/">首页</a>
-    <a href="/about/">关于</a>
-    <a href="/blog/">博客</a>
-    
-    <h1>我的 Astro 学习博客</h1>
-    <p>在这里，我将分享我的学习 Astro 之旅。</p>
-    <ul>
-        <li><a href="/posts/post-1/">文章 1</a></li>
-        <li><a href="/posts/post-2/">文章 2</a></li>
-        <li><a href="/posts/post-3/">文章 3</a></li>
-      </ul>
-  </body>
+    <head>
+        <meta charset="utf-8" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <meta name="viewport" content="width=device-width" />
+        <meta name="generator" content={Astro.generator} />
+        <title>Astro</title>
+    </head>
+    <body>
+        <a href="/">首页</a>
+        <a href="/about/">关于</a>
+        <a href="/blog/">博客</a>
+
+        <h1>我的 Astro 学习博客</h1>
+        <p>在这里，我将分享我的学习 Astro 之旅。</p>
+        <ul>
+            <li><a href="/posts/post-1/">文章 1</a></li>
+            <li><a href="/posts/post-2/">文章 2</a></li>
+            <li><a href="/posts/post-3/">文章 3</a></li>
+        </ul>
+    </body>
 </html>

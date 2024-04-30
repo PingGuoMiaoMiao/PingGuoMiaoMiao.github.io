@@ -1,17 +1,20 @@
 ---
+
+import '../styles/global.css';
+
 const pagestitle = "我的 Astro 站点";
 ---
 
 <html lang="zh-cn">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" type ="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width" />
-    <meta name="generator" content = {Astro.generator} >
+    <meta name="generator" content={Astro.generator} />
     <title>Astro</title>
   </head>
   <body>
-		<h1>{pagestitle}</h1>
+    <h1>{pagestitle}</h1>
     <a href="/">首页</a>
     <a href="/about/">关于</a>
     <a href="/blog/">博客</a>
