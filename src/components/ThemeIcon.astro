@@ -35,7 +35,7 @@
       document.documentElement.classList.add('dark');
     }
   
-    window.localStorage.setItem('theme', theme);
+    window.localStorage.setItem('theme', theme!);
   
     const handleToggleClick = () => {
       const element = document.documentElement;
@@ -45,5 +45,5 @@
       localStorage.setItem("theme", isDark ? "dark" : "light");
     }
   
-    document.getElementById("themeToggle").addEventListener("click", handleToggleClick);
+    document.getElementById("themeToggle")!.addEventListener("click", handleToggleClick);
   </script>
