@@ -1,8 +1,9 @@
 ---
-
-import '../styles/global.css';
 import Navigation from '../components/Navigation.astro';
-const pagestitle = "我的 Astro 站点";
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+
+const pageTitle = '首页';
 ---
 
 <html lang="zh-cn">
@@ -11,10 +12,11 @@ const pagestitle = "我的 Astro 站点";
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
-    <title>Astro</title>
+    <title>{pageTitle}</title>
   </head>
   <body>
-    <h1>{pagestitle}</h1>
     <Navigation />
+    <h1>{pageTitle}</h1>
+    <Footer />
   </body>
 </html>

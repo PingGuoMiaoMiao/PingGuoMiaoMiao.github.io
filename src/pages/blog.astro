@@ -1,7 +1,8 @@
 ---
+import Footer from "../components/Footer.astro";
 const pagestitle = "我的 Astro 站点";
-import Navigation from '../components/Navigation.astro';
-import '../styles/global.css';
+import Navigation from "../components/Navigation.astro";
+import "../styles/global.css";
 ---
 
 <html lang="zh-cn">
@@ -22,5 +23,6 @@ import '../styles/global.css';
             <li><a href="/posts/post-2/">文章 2</a></li>
             <li><a href="/posts/post-3/">文章 3</a></li>
         </ul>
+        <Footer />
     </body>
 </html>
