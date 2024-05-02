@@ -1,4 +1,12 @@
 /* 导航样式 */
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  text-align: center;
+}
 .hamburger {
   padding-right: 20px;
   cursor: pointer;
