@@ -3,7 +3,31 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Greeting from '../components/Greeting';
 const pageTitle = "friends";
 ---
+
 <BaseLayout pageTitle={pageTitle}>
   <h2>My awesome blog subtitle</h2>
   <Greeting client:load messages={["Hej", "Hallo", "Hola", "Habari"]} />
+  <div class="boxs"></div>
 </BaseLayout>
+
+<style>
+.boxs {
+  width: 100px;
+  height: 100px;
+  position: absolute;
+  background-color: #666;
+}
+</style>
+
+<!-- <script>
+  document.addEventListener('mousemove', function (event) {
+    var mouseX = event.clientX;
+    var mouseY = event.clientY;
+
+    var boxes = document.getElementsByClassName("boxs");
+    for (var i = 0; i < boxes.length; i++) {
+      boxes[i].style.left = mouseX + 'px';
+      boxes[i].style.top = mouseY + 'px';
+    }
+  });
+</script> -->
