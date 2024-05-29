@@ -39,14 +39,14 @@ const friends = [
 <BaseLayout title="朋友们">
     <div class="markdown-body">
     </div>
-    <div class="flex justify-center items-center">
-        <div class="flex flex-wrap justify-center items-center gap-2 m-6 max-w-[720px]">
+    <div class="flex justify-center items-center" id="friends-box">
+        <div class="flex flex-wrap justify-center items-center gap-2 m-6 max-w-[720px]" id="friends-boxs">
             {
                 friends.map(friend =>
-                        <div class="flex items-center gap-2 h-24 p-3 rounded-xl w-[260px] hover:shadow-2xl">
-                            <img alt={friend.name} src={friend.avatar} class="h-16 rounded-full"/>
-                            <div class="flex flex-col">
-                                <a href={friend.link} class="font-bold">
+                        <div class="flex items-center gap-2 h-24 p-3 rounded-xl w-[260px] hover:shadow-2xl" id="style-friend">
+                            <img alt={friend.name} src={friend.avatar} class="h-16 rounded-full" id="style-boxs"/>
+                            <div class="flex flex-col" id="element">
+                                <a href={friend.link} class="font-bold" id="element-font">
                                     {friend.name}
                                 </a>
                                 <a>{friend.about}</a>
@@ -57,3 +57,48 @@ const friends = [
         </div>
     </div>
 </BaseLayout>
+<style>
+#friends-box{
+    display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#friends-boxs{
+    display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 1.5rem;
+  max-width: 720px;
+}
+#style-friend{
+    display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 6rem;
+  padding: 0.75rem;
+  border-radius: 1.25rem;
+  width: 260px;
+  box-shadow: none;
+  transition: box-shadow 0.3s ease;
+}
+
+#style-friend:hover{
+    box-shadow: 0 25px 50px -12px rgba(255, 255, 255, 0.25);
+}
+
+#style-boxs{
+    height: 16px;
+    border-radius: 50%;
+}
+
+#element{
+    display: flex;
+    flex-direction: column;
+}
+
+#element-font{
+    font-weight: bold;
+}
+</style>

@@ -7,27 +7,47 @@ const pageTitle = "friends";
 <BaseLayout pageTitle={pageTitle}>
   <h2>My awesome blog subtitle</h2>
   <Greeting client:load messages={["Hej", "Hallo", "Hola", "Habari"]} />
-  <div class="boxs"></div>
 </BaseLayout>
 
 <style>
-.boxs {
-  width: 100px;
-  height: 100px;
+.container {
+  position: relative;
+}
+
+.circle {
+  width: 60px;
+  height: 60px;
+  top: 175px;
+  left: 355px;
   position: absolute;
-  background-color: #666;
+  border-radius: 50%;
+  background-color: black;
+}
+
+.eye {
+  width: 23px;
+  height: 23px;
+  position: absolute;
+  background-color: bisque;
+  border-radius: 50%;
+ 
+}
+
+.circle2 {
+  width: 60px;
+  height: 60px;
+  top: 182px;
+  left: 510px;
+  position: absolute;
+  border-radius: 50%;
+  background-color: black;
+}
+
+.eye2 {
+  width: 23px;
+  height: 23px;
+  position: absolute;
+  background-color: bisque;
+  border-radius: 50%;
 }
 </style>
-
-<!-- <script>
-  document.addEventListener('mousemove', function (event) {
-    var mouseX = event.clientX;
-    var mouseY = event.clientY;
-
-    var boxes = document.getElementsByClassName("boxs");
-    for (var i = 0; i < boxes.length; i++) {
-      boxes[i].style.left = mouseX + 'px';
-      boxes[i].style.top = mouseY + 'px';
-    }
-  });
-</script> -->
