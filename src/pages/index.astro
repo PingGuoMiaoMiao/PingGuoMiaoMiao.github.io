@@ -1,53 +1,17 @@
 ---
+import { ViewTransitions } from 'astro:transitions';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Greeting from '../components/Greeting';
-const pageTitle = "friends";
+import Loading from '../components/Loading.astro';
+import { any } from 'astro/zod';
+const pageTitle = "欢迎来到";
 ---
-
 <BaseLayout pageTitle={pageTitle}>
-  <h2>My awesome blog subtitle</h2>
   <Greeting client:load messages={["Hej", "Hallo", "Hola", "Habari"]} />
+  <ViewTransitions />
 </BaseLayout>
 
 <style>
-.container {
-  position: relative;
-}
+  
 
-.circle {
-  width: 60px;
-  height: 60px;
-  top: 175px;
-  left: 355px;
-  position: absolute;
-  border-radius: 50%;
-  background-color: black;
-}
-
-.eye {
-  width: 23px;
-  height: 23px;
-  position: absolute;
-  background-color: bisque;
-  border-radius: 50%;
- 
-}
-
-.circle2 {
-  width: 60px;
-  height: 60px;
-  top: 182px;
-  left: 510px;
-  position: absolute;
-  border-radius: 50%;
-  background-color: black;
-}
-
-.eye2 {
-  width: 23px;
-  height: 23px;
-  position: absolute;
-  background-color: bisque;
-  border-radius: 50%;
-}
 </style>

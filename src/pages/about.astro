@@ -1,4 +1,5 @@
 ---
+import { ViewTransitions } from 'astro:transitions';
 import Footer from "../components/Footer.astro";
 import "../styles/global.css";
 import Header from '../components/Header.astro';
@@ -39,6 +40,7 @@ const textCase = "uppercase";
                 text-transform: var(--textCase);
             }
         </style>
+         <ViewTransitions />
     </head>
     <body>
         <Header />
