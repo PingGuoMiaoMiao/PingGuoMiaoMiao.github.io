@@ -19,6 +19,7 @@
     :global(.dark) .moon { fill: white; }
   </style>
   <script>
+    document.addEventListener('astro:page-load', () => {
     const theme = (() => {
       if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
         return localStorage.getItem('theme');
@@ -46,4 +47,10 @@
     }
   
     document.getElementById("themeToggle")!.addEventListener("click", handleToggleClick);
-  </script>
+  });
+  document.addEventListener('astro:after-swap', () => {
+    localStorage.theme === 'dark'
+    ? document.documentElement.classList.add("dark")
+    : document.documentElement.classList.remove("dark");
+  });
+    </script>
