@@ -4,13 +4,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Greeting from '../components/Greeting';
 import Loading from '../components/Loading.astro';
 import { any } from 'astro/zod';
+import BackgroundCarousel from '../components/Background_Carousel.astro';
 const pageTitle = "苹果喵喵Blog";
 ---
 <BaseLayout pageTitle={pageTitle}>
   <Greeting client:load messages={["Hej", "Hallo", "Hola", "Habari"]} />
   <ViewTransitions />
 </BaseLayout>
-
 <style>
   
 

@@ -1,0 +1,87 @@
+---
+// BackgroundCarousel.astro
+const slides = [
+    {
+        image: 'public/wallhaven-jxkrzy_3840x1600.png',
+        text: 'First Slide',
+    },
+    {
+        image: 'public/wallhaven-we7767_3440x1440.png',
+        text: 'Second Slide',
+    },
+    {
+        image: 'public/wallhaven-5g99w9_3840x1600.png',
+        text: 'Third Slide',
+    },
+];
+---
+
+<div class="carousel">
+    {slides.map((slide, index) => (
+        <div class={`carousel-slide ${index === 0 ? 'active' : ''}`} style={`background-image: url(${slide.image});`}>
+            <div class="text">{slide.text}</div>
+        </div>
+    ))}
+</div>
+
+<style>
+    body, html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow: hidden;
+        font-family: Arial, sans-serif;
+    }
+
+    .carousel {
+        position: fixed;
+        height: 100vh;
+        width: 100%;
+        overflow: hidden;
+        z-index: -1;
+    }
+
+    .carousel-slide {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        background-size: cover;
+        background-position: center;
+        opacity: 0;
+        transition: opacity 1s ease-in-out;
+    }
+
+    .carousel-slide.active {
+        opacity: 1;
+    }
+
+    .text {
+        position: absolute;
+        bottom: 20px; /* Position text at the bottom */
+        left: 50%;
+        transform: translateX(-50%);
+        color: white;
+        font-size: 2em;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    }
+</style>
+
+<script>
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.carousel-slide');
+    const totalSlides = slides.length;
+
+    function showSlide(index: number) {
+        slides[currentSlide].classList.remove('active');
+        currentSlide = (index + totalSlides) % totalSlides;
+        slides[currentSlide].classList.add('active');
+    }
+
+    function nextSlide() {
+        showSlide(currentSlide + 1);
+    }
+
+    setInterval(nextSlide, 5000); // Change slide every 5 seconds
+</script>

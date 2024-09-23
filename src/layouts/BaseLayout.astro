@@ -3,6 +3,7 @@ import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import "../styles/global.css";
 import { ViewTransitions } from "astro:transitions";
+import BackgroundCarousel from '../components/Background_Carousel.astro';
 const { pageTitle } = Astro.props;
 ---
 
@@ -13,11 +14,12 @@ const { pageTitle } = Astro.props;
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
     <title>{pageTitle}</title>
-    <ViewTransitions />
+    <ViewTransitions /> 
+    <BackgroundCarousel />
   </head>
   <body>
     <Header />
-    <h1 transition:animate="slide">{pageTitle}</h1>
+    <h1 transition:animate="slide" style="position: relative;z-index: 1;">{pageTitle}</h1>
     <slot />
     <Footer />
     <script>

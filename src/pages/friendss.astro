@@ -1,7 +1,6 @@
 ---
 import { ViewTransitions } from 'astro:transitions';
-import BaseLayout from "../layouts/BaseLayout.astro"
-
+import BaseLayout from "../layouts/BaseLayout.astro";
 
 const friends = [
     {
@@ -10,72 +9,83 @@ const friends = [
         link: "https://blog.krysztal.dev/",
         about: "BreakIced 的小柜子"
     }, 
-]
+    {
+        avatar: "/workspaces/PingGuoMiaoMiao.github.io/public/小南娘图.jpg",
+        name: "苹果喵喵",
+        link: "https://blog.krysztal.dev/",
+        about: "BreakIced 的小柜子"
+    },
+];
 ---
+
 <BaseLayout title="朋友们">
-    <div class="markdown-body">
-    </div>
+    <div class="markdown-body"></div>
     <div class="flex justify-center items-center" id="friends-box">
-        <div class="flex flex-wrap justify-center items-center gap-2 m-6 max-w-[720px]" id="friends-boxs">
+        <div class="flex flex-wrap justify-center items-center gap-4 m-6 max-w-[720px]" id="friends-boxs">
             {
-                friends.map(friend =>
-                        <div class="flex items-center gap-2 h-24 p-3 rounded-xl w-[260px] hover:shadow-2xl" id="style-friend">
-                            <img alt={friend.name} src={friend.avatar} class="h-16 rounded-full" id="style-boxs"/>
-                            <div class="flex flex-col" id="element">
-                                <a href={friend.link} class="font-bold" id="element-font">
-                                    {friend.name}
-                                </a>
-                                <a>{friend.about}</a>
-                            </div>
+                friends.map(friend => (
+                    <div class="friend-card" id="style-friend">
+                        <img alt={friend.name} src={friend.avatar} class="avatar" id="style-boxs"/>
+                        <div class="friend-info" id="element">
+                            <a href={friend.link} class="friend-name" id="element-font">
+                                {friend.name}
+                            </a>
+                            <p>{friend.about}</p>
                         </div>
-                )
+                    </div>
+                ))
             }
         </div>
     </div>
     <ViewTransitions />
 </BaseLayout>
+
 <style>
-#friends-box{
+#friends-box {
     display: flex;
-  justify-content: center;
-  align-items: center;
-}
-#friends-boxs{
-    display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  gap: 0.5rem;
-  margin: 1.5rem;
-  max-width: 720px;
-}
-#style-friend{
-    display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  height: 6rem;
-  padding: 0.75rem;
-  border-radius: 1.25rem;
-  width: 260px;
-  box-shadow: none;
-  transition: box-shadow 0.3s ease;
+    justify-content: center;
+    align-items: center;
 }
 
-#style-friend:hover{
+#friends-boxs {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin: 1.5rem;
+    max-width: 720px;
+}
+
+.friend-card {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    height: 6rem;
+    padding: 0.75rem;
+    border-radius: 1.25rem;
+    width: 260px;
+    box-shadow: none;
+    transition: box-shadow 0.3s ease;
+}
+
+.friend-card:hover {
     box-shadow: 0 25px 50px -12px rgba(255, 255, 255, 0.25);
+    color: aqua;
 }
 
-#style-boxs{
-    height: 16px;
+.avatar {
+    height: 4rem;
+    width: 4rem;
     border-radius: 50%;
 }
 
-#element{
+.friend-info {
     display: flex;
     flex-direction: column;
 }
 
-#element-font{
+.friend-name {
     font-weight: bold;
 }
 </style>
