@@ -73,15 +73,13 @@ const slides = [
     const slides = document.querySelectorAll('.carousel-slide');
     const totalSlides = slides.length;
 
-    function showSlide(index: number) {
+    const showSlide = (index: number) => {
         slides[currentSlide].classList.remove('active');
         currentSlide = (index + totalSlides) % totalSlides;
         slides[currentSlide].classList.add('active');
-    }
+    };
 
-    function nextSlide() {
-        showSlide(currentSlide + 1);
-    }
+    const nextSlide = () => showSlide(currentSlide + 1);
 
-    setInterval(nextSlide, 5000); // Change slide every 5 seconds
+    setInterval(nextSlide, 5000); // 每5秒切换一次幻灯片
 </script>
