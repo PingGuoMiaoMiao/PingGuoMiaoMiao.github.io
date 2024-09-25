@@ -19,11 +19,44 @@ const { pageTitle } = Astro.props;
   </head>
   <body>
     <Header />
-    <h1 transition:animate="slide" style="position: relative;z-index: 1;">{pageTitle}</h1>
-    <slot />
+    <div class="grid-container">
+      <div class="item1">header</header></div>
+      <div class="item2">Menu</div>
+      <div class="item3">
+        <h1 transition:animate="slide" style="position: relative;z-index: 1;" class="gradientText">{pageTitle}</h1>
+            <slot />
+      </div>  
+      <div class="item4">Right</div>
+    </div>
+
     <Footer />
     <script>
       import "../scripts/menu.js";
     </script>
   </body>
 </html>
+<style>
+  .item1 { grid-area: header; }
+  .item2 { grid-area: menu; }
+  .item3 { grid-area: main; }
+  .item4 { grid-area: right; }
+  
+  
+  .grid-container {
+    display: grid;
+    grid-template-areas:
+      'header main main main right right'
+      'menu main main main right right'
+      'menu main main main right right'
+      'menu main main main right right';
+    grid-gap: 10px;
+    padding: 10px;
+  }
+  
+  .grid-container > div {
+    text-align: center;
+    padding: 20px 0;
+    font-size: 30px;
+  }
+  </style>
+  
