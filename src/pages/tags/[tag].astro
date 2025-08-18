@@ -3,12 +3,41 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import PostCard from '../../components/PostCard.astro';
 import type { MarkdownInstance } from 'astro';
 
-export async function getStaticPaths(): Promise<{ params: { tag: string }; props: { posts: MarkdownInstance<Record<string, any>>[] } }[]> {
-  const allPosts = await Astro.glob('../posts/*.md');
-  const uniqueTags: string[] = [...new Set(allPosts.map((post: { frontmatter: { tags?: string[] } }) => post.frontmatter.tags || []).flat())];
+// 1. 定义类型接口
+interface Frontmatter {
+  title: string;
+  description?: string;
+  pubDate: string | Date;
+  tags?: string[];
+  image?: string;
+  [key: string]: any; // 其他可能的属性
+}
 
-  return uniqueTags.map((tag: string) => {
-    const filteredPosts = allPosts.filter((post: { frontmatter: { tags?: string[] } }) => (post.frontmatter.tags || []).includes(tag));
+interface Post extends MarkdownInstance<Frontmatter> {
+  url: string;
+}
+
+// 2. 定义 getStaticPaths 的返回类型
+interface StaticPath {
+  params: { tag: string };
+  props: { posts: Post[] };
+}
+
+export async function getStaticPaths(): Promise<StaticPath[]> {
+  const allPosts = (await Astro.glob<Frontmatter>('../posts/*.md')) as Post[];
+  
+  // 3. 收集所有唯一的标签
+  const tagSet = new Set<string>();
+  allPosts.forEach(post => {
+    (post.frontmatter.tags || []).forEach(tag => tagSet.add(tag));
+  });
+  const uniqueTags = Array.from(tagSet);
+
+  return uniqueTags.map(tag => {
+    const filteredPosts = allPosts.filter(post => 
+      (post.frontmatter.tags || []).includes(tag)
+    );
+    
     return {
       params: { tag },
       props: { posts: filteredPosts },
@@ -16,17 +45,10 @@ export async function getStaticPaths(): Promise<{ params: { tag: string }; props
   });
 }
 
-const { tag } = Astro.params;
-const { posts } = Astro.props as { posts: MarkdownInstance<Record<string, any>>[] };
+// 4. 明确指定类型
+const params = Astro.params as { tag: string };
+const props = Astro.props as { posts: Post[] };
+
+const tag = params.tag;
+const { posts } = props;
 ---
-<BaseLayout pageTitle={tag}>
-  <p>包含「{tag}」标签的文章</p>
-  <div class="grid">
-    {posts.map((post: any) => (
-      <PostCard href={post.url} frontmatter={post.frontmatter} />
-    ))}
-  </div>
-</BaseLayout>
-<style>
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1rem; margin-top: .5rem; }
-</style>
