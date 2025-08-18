@@ -1,32 +1,80 @@
 ---
+// 1. 导入依赖
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PostCard from '../../components/PostCard.astro';
 import type { MarkdownInstance } from 'astro';
 
-export async function getStaticPaths(): Promise<{ params: { tag: string }; props: { posts: MarkdownInstance<Record<string, any>>[] } }[]> {
+// 2. 获取所有标签的静态路径
+export async function getStaticPaths() {
   const allPosts = await Astro.glob('../posts/*.md');
-  const uniqueTags: string[] = [...new Set(allPosts.map((post: { frontmatter: { tags?: string[] } }) => post.frontmatter.tags || []).flat())];
-
-  return uniqueTags.map((tag: string) => {
-    const filteredPosts = allPosts.filter((post: { frontmatter: { tags?: string[] } }) => (post.frontmatter.tags || []).includes(tag));
+  
+  // 收集所有唯一标签
+  const allTags = allPosts.flatMap(
+    (post) => post.frontmatter.tags || []
+  );
+  const uniqueTags = [...new Set(allTags)];
+  
+  // 为每个标签创建路径
+  return uniqueTags.map((tag) => {
+    const postsForTag = allPosts.filter(
+      (post) => (post.frontmatter.tags || []).includes(tag)
+    );
+    
     return {
       params: { tag },
-      props: { posts: filteredPosts },
+      props: { 
+        posts: postsForTag,
+        tag: tag
+      }
     };
   });
 }
 
+// 3. 组件属性
 const { tag } = Astro.params;
-const { posts } = Astro.props as { posts: MarkdownInstance<Record<string, any>>[] };
+const { posts } = Astro.props;
 ---
-<BaseLayout pageTitle={tag}>
-  <p>包含「{tag}」标签的文章</p>
-  <div class="grid">
-    {posts.map((post) => (
-      <PostCard href={post.url} frontmatter={post.frontmatter} />
-    ))}
-  </div>
+<!-- 4. 主模板 -->
+<BaseLayout pageTitle={`标签: ${tag}`}>
+  <main>
+    <h1>包含「{tag}」标签的文章</h1>
+    
+    <!-- 5. 文章列表 - 确保表达式正确包裹 -->
+    <div class="grid">
+      {
+        posts.length > 0 ? (
+          posts.map((post) => (
+            <PostCard 
+              href={post.url} 
+              frontmatter={post.frontmatter}
+              key={post.url}
+            />
+          ))
+        ) : (
+          <p class="empty">没有找到相关文章</p>
+        )
+      }
+    </div>
+  </main>
 </BaseLayout>
+
+<!-- 6. 样式部分独立 -->
 <style>
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1rem; margin-top: .5rem; }
+  h1 {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  .empty {
+    font-style: italic;
+    color: #666;
+    grid-column: 1 / -1;
+    text-align: center;
+  }
 </style>
