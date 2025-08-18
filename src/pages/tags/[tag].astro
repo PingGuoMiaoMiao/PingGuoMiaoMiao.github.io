@@ -1,71 +1,32 @@
 ---
-// FRONTMATTER - 确保使用完整分隔符
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PostCard from '../../components/PostCard.astro';
-import { getCollection } from 'astro:content';
+import type { MarkdownInstance } from 'astro';
 
-// 静态路径生成（简化版）
-export async function getStaticPaths() {
-  const allPosts = await getCollection('posts');
-  
-  // 收集所有标签
-  const tags = new Set();
-  allPosts.forEach(post => {
-    (post.data.tags || []).forEach(tag => tags.add(tag));
+export async function getStaticPaths(): Promise<{ params: { tag: string }; props: { posts: MarkdownInstance<Record<string, any>>[] } }[]> {
+  const allPosts = await Astro.glob('../posts/*.md');
+  const uniqueTags: string[] = [...new Set(allPosts.map((post: { frontmatter: { tags?: string[] } }) => post.frontmatter.tags || []).flat())];
+
+  return uniqueTags.map((tag: string) => {
+    const filteredPosts = allPosts.filter((post: { frontmatter: { tags?: string[] } }) => (post.frontmatter.tags || []).includes(tag));
+    return {
+      params: { tag },
+      props: { posts: filteredPosts },
+    };
   });
-  
-  // 构建路径
-  return Array.from(tags).map(tag => ({
-    params: { tag },
-    props: { 
-      posts: allPosts.filter(post => (post.data.tags || []).includes(tag))
-    }
-  }));
 }
 
-// 获取当前标签参数
 const { tag } = Astro.params;
-
-// 获取传递的文章数据
-const { posts } = Astro.props;
+const { posts } = Astro.props as { posts: MarkdownInstance<Record<string, any>>[] };
 ---
-<!-- TEMPLATE - 确保此处是完整的HTML内容 -->
-<BaseLayout title={`标签: ${tag}`}>
-  <section>
-    <h1>包含“{tag}”标签的文章 (共 {posts.length} 篇)</h1>
-    
-    <div class="post-grid">
-      <!-- 简化表达式结构 - 确保完整包裹 -->
-      {posts.length ? posts.map(post => (
-        <PostCard 
-          entry={post} 
-          key={post.slug}
-        />
-      )) : (
-        <p class="no-posts">暂无相关文章</p>
-      )}
-    </div>
-  </section>
+<BaseLayout pageTitle={tag}>
+  <p>包含「{tag}」标签的文章</p>
+  <div class="grid">
+    {posts.map((post: any) => (
+      <PostCard href={post.url} frontmatter={post.frontmatter} />
+    ))}
+  </div>
 </BaseLayout>
-
-<!-- STYLE - 独立区块 -->
 <style>
-  section {
-    padding: 2rem 0;
-  }
-  h1 {
-    font-size: 1.8rem;
-    margin-bottom: 1.5rem;
-  }
-  .post-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1.5rem;
-  }
-  .no-posts {
-    grid-column: 1 / -1;
-    text-align: center;
-    padding: 3rem 0;
-    color: #666;
-  }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1rem; margin-top: .5rem; }
 </style>
