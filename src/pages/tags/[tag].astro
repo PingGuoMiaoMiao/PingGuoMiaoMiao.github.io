@@ -22,7 +22,7 @@ const { posts } = Astro.props as { posts: MarkdownInstance<Record<string, any>>[
 <BaseLayout pageTitle={tag}>
   <p>包含「{tag}」标签的文章</p>
   <div class="grid">
-    {posts.map((post: any) => (
+    {posts.map((post) => (
       <PostCard href={post.url} frontmatter={post.frontmatter} />
     ))}
   </div>
