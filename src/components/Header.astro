@@ -3,10 +3,25 @@ import Hamburger from './Hamburger.astro';
 import Navigation from './Navigation.astro';
 import ThemeIcon from './ThemeIcon.astro';
 ---
-<header>
- <nav>
-   <Hamburger />
-   <ThemeIcon />
-   <Navigation />
+<header class="site-header">
+ <nav class="nav">
+   <div class="left">
+     <Hamburger />
+     <a class="brand gradientText" href="/">PingGuoMiaoMiao</a>
+   </div>
+   <div class="right">
+     <ThemeIcon />
+     <Navigation />
+   </div>
  </nav>
 </header>
+<style>
+  .site-header { position: sticky; top: 0; z-index: 10; backdrop-filter: saturate(180%) blur(10px); background: rgba(0,0,0,.25); border-bottom: 1px solid rgba(255,255,255,.08); }
+  .nav { display: flex; align-items: center; justify-content: space-between; width: min(1100px, 92%); margin: 0 auto; padding: .75rem 0; }
+  .left { display: flex; align-items: center; gap: .75rem; }
+  .right { display: flex; align-items: center; gap: .5rem; }
+  .brand { text-decoration: none; font-weight: 900; letter-spacing: .3px; font-size: clamp(1.5rem, 4vw, 2.25rem); }
+  .nav :global(.nav-links a) { padding: .35rem .8rem; border-radius: 999px; }
+  /* 让品牌文字的渐变更明显且动态 */
+  .brand.gradientText { background-size: 300% 100%; animation: backgroundScroll 8s linear infinite; }
+</style>

@@ -1,0 +1,100 @@
+---
+---
+
+<button id="settingsBtn" aria-label="站点设置" title="站点设置">⚙️</button>
+<div id="settingsPanel" class="panel" hidden>
+  <div class="row">
+    <label>主题色</label>
+    <select id="accentSelect">
+      <option value="linear-gradient(120deg, #bd34fe, #e0321b 30%, #41d1ff 60%)">默认</option>
+      <option value="linear-gradient(120deg, #22d3ee, #a78bfa 50%, #fb7185)">清新</option>
+      <option value="linear-gradient(120deg, #f59e0b, #ef4444 50%, #8b5cf6)">暖色</option>
+    </select>
+  </div>
+  <div class="row">
+    <label>圆角</label>
+    <input id="radiusRange" type="range" min="8" max="24" step="1" />
+  </div>
+  <div class="row">
+    <label>
+      <input id="bgToggle" type="checkbox" /> 隐藏背景轮播
+    </label>
+  </div>
+  <div class="row end">
+    <button id="closeSettings">关闭</button>
+  </div>
+</div>
+
+<style>
+  #settingsBtn {
+    position: fixed; right: 16px; bottom: 72px; width: 40px; height: 40px; border-radius: 50%;
+    border: none; color: #fff; background: rgba(0,0,0,.5); box-shadow: 0 10px 20px rgba(0,0,0,.25);
+    cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px;
+    transition: transform .15s ease, background .2s ease; z-index: 15;
+    backdrop-filter: saturate(180%) blur(6px);
+  }
+  #settingsBtn:hover { transform: translateY(-1px); background: rgba(255,255,255,.18); }
+  .panel {
+    position: fixed; right: 16px; bottom: 120px; width: 260px; padding: .9rem; border-radius: 12px;
+    background: rgba(0,0,0,.6); color: #fff; box-shadow: 0 18px 40px rgba(0,0,0,.35), inset 0 0 0 1px rgba(255,255,255,.08);
+    z-index: 15; backdrop-filter: saturate(180%) blur(10px);
+  }
+  .row { display: flex; align-items: center; gap: .6rem; margin-bottom: .6rem; justify-content: space-between; }
+  .row.end { justify-content: flex-end; margin-bottom: 0; }
+  label { font-size: .92rem; opacity: .95; }
+  select, input[type="range"], button { width: 140px; }
+  #closeSettings { padding: .3rem .6rem; border-radius: 8px; border: none; cursor: pointer; }
+</style>
+
+<script>
+  type Settings = {
+    gradient: string;
+    radius: number;
+    hideCarousel: boolean;
+  };
+  const DEFAULTS: Settings = {
+    gradient: getComputedStyle(document.documentElement).getPropertyValue('--gradient').trim() || 'linear-gradient(120deg, #bd34fe, #e0321b 30%, #41d1ff 60%)',
+    radius: parseInt(getComputedStyle(document.documentElement).getPropertyValue('--radius')) || 14,
+    hideCarousel: false,
+  };
+  const KEY = 'site-settings';
+
+  const load = (): Settings => {
+    try { return Object.assign({}, DEFAULTS, JSON.parse(localStorage.getItem(KEY) || '{}')); }
+    catch { return DEFAULTS; }
+  };
+  const save = (s: Settings) => localStorage.setItem(KEY, JSON.stringify(s));
+
+  const apply = (s: Settings) => {
+    const root = document.documentElement;
+    root.style.setProperty('--gradient', s.gradient);
+    root.style.setProperty('--radius', String(s.radius));
+    root.classList.toggle('hide-carousel', !!s.hideCarousel);
+  };
+
+  const bind = () => {
+    const settings = load();
+    apply(settings);
+    const btn = document.getElementById('settingsBtn')!;
+    const panel = document.getElementById('settingsPanel')! as HTMLDivElement;
+    const sel = document.getElementById('accentSelect')! as HTMLSelectElement;
+    const rng = document.getElementById('radiusRange')! as HTMLInputElement;
+    const chk = document.getElementById('bgToggle')! as HTMLInputElement;
+    const close = document.getElementById('closeSettings')! as HTMLButtonElement;
+    sel.value = settings.gradient;
+    rng.value = String(settings.radius);
+    chk.checked = settings.hideCarousel;
+
+    const open = () => { panel.hidden = false; };
+    const hide = () => { panel.hidden = true; };
+    btn.addEventListener('click', () => panel.hidden ? open() : hide());
+    close.addEventListener('click', hide);
+    sel.addEventListener('change', () => { settings.gradient = sel.value; apply(settings); save(settings); });
+    rng.addEventListener('input', () => { settings.radius = parseInt(rng.value); apply(settings); save(settings); });
+    chk.addEventListener('change', () => { settings.hideCarousel = chk.checked; apply(settings); save(settings); });
+  };
+  document.addEventListener('astro:page-load', bind);
+  document.addEventListener('astro:after-swap', bind);
+</script>
+
+

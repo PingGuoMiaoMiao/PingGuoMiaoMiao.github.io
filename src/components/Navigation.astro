@@ -1,9 +1,20 @@
 ---
+const pathname = Astro.url.pathname;
+const links = [
+  { href: '/', label: '首页' },
+  { href: '/archives', label: '归档' },
+  { href: '/categories', label: '分类' },
+  { href: '/about/', label: '关于' },
+  { href: '/blog/', label: '博客' },
+  { href: '/tags/', label: '标签' },
+  { href: '/friendss', label: '友链' },
+];
 ---
 <div transition:animate="slide" class="nav-links">
-  <a href="/">Home</a>
-  <a href="/about/" data-astro-reload>About</a>
-  <a href="/blog/">Blog</a>
-  <a href="/tags/">Tags</a>
-  <a href="/friendss">friend</a>
+  {links.map((l) => (
+    <a href={l.href} class={pathname === l.href || (l.href !== '/' && pathname.startsWith(l.href)) ? 'active' : ''}>{l.label}</a>
+  ))}
+  <style>
+    .nav-links a.active { background: rgba(255,255,255,.12); box-shadow: 0 6px 16px rgba(0,0,0,.25), inset 0 0 0 1px rgba(255,255,255,.12); }
+  </style>
 </div>

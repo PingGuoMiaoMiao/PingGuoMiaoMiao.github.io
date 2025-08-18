@@ -1,13 +1,61 @@
 ---
 import { ViewTransitions } from 'astro:transitions';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import BlogPost from '../components/BlogPost.astro';
+import PostCard from '../components/PostCard.astro';
 const allPosts = await Astro.glob('../pages/posts/*.md');
-const pageTitle = "";
+const tagSet = [...new Set(allPosts.map((p: { frontmatter: { tags?: string[] } }) => p.frontmatter.tags || []).flat())];
+const currentTag = Astro.url.searchParams.get('tag');
+const filtered = currentTag ? allPosts.filter((p: { frontmatter: { tags?: string[] } }) => (p.frontmatter.tags || []).includes(currentTag)) : allPosts;
+const q = Astro.url.searchParams.get('q')?.toLowerCase() || '';
+const searched = q
+  ? filtered.filter((p: any) =>
+      (p.frontmatter.title || '').toLowerCase().includes(q) ||
+      (p.frontmatter.description || '').toLowerCase().includes(q)
+    )
+  : filtered;
+const PAGE_SIZE = 6;
+const page = Number(Astro.url.searchParams.get('page') || '1');
+const pagePosts = searched.slice(0, PAGE_SIZE * page);
+const pageTitle = "博客文章";
 ---
 <BaseLayout pageTitle={pageTitle}>
-  <ul>
-    {allPosts.map((post) => <BlogPost url={post.url} title={post.frontmatter.title} />)}
-  </ul>
+  {tagSet.length > 0 && (
+    <div class="tag-filter">
+      <a href="/blog" class={!currentTag ? 'active' : ''}>全部</a>
+      {tagSet.map((t) => (
+        <a href={`/blog?tag=${t}`} class={currentTag === t ? 'active' : ''}>#{t}</a>
+      ))}
+    </div>
+  )}
+  <form class="search" method="get" action="/blog">
+    {currentTag && <input type="hidden" name="tag" value={currentTag} />}
+    <input name="q" placeholder="搜索标题或描述…" value={q} />
+    <button type="submit">搜索</button>
+  </form>
+  <div class="grid">
+    {pagePosts.map((post: any) => (
+      <PostCard href={post.url} frontmatter={post.frontmatter} />
+    ))}
+  </div>
+  {PAGE_SIZE * page < searched.length && (
+    <div class="more">
+      <a class="load-more" href={`/blog?${currentTag ? `tag=${currentTag}&` : ''}${q ? `q=${encodeURIComponent(q)}&` : ''}page=${page + 1}`}>加载更多</a>
+    </div>
+  )}
   <ViewTransitions />
 </BaseLayout>
+<style>
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1rem;
+  }
+  .tag-filter { display: flex; flex-wrap: wrap; gap: .6rem; margin-bottom: 1rem; }
+  .tag-filter a { text-decoration: none; padding: .4rem .7rem; border-radius: 999px; background: rgba(255,255,255,.06); color: #fff; }
+  .tag-filter a.active { background: rgba(255,255,255,.12); }
+  .search { display: flex; gap: .5rem; margin-bottom: 1rem; }
+  .search input { flex: 1; padding: .5rem .6rem; border-radius: 10px; border: 1px solid rgba(255,255,255,.12); background: rgba(0,0,0,.25); color: #fff; }
+  .search button { padding: .5rem .8rem; border-radius: 10px; border: none; background: rgba(255,255,255,.12); color: #fff; cursor: pointer; }
+  .more { display: flex; justify-content: center; margin-top: 1rem; }
+  .load-more { text-decoration: none; padding: .6rem 1rem; border-radius: 10px; background: rgba(255,255,255,.12); color: #fff; }
+</style>

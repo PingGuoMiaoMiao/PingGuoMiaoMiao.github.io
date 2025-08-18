@@ -1,88 +1,35 @@
 ---
-import { ViewTransitions } from 'astro:transitions';
-import Footer from "../components/Footer.astro";
-import "../styles/global.css";
-import Header from '../components/Header.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
 const pageTitle = "关于我";
-
 const identity = {
-    firstName: "莎拉",
-    country: "加拿大",
-    occupation: "技术撰稿人",
-    hobbies: ["摄影", "观鸟", "棒球"],
+  firstName: "莎拉",
+  country: "加拿大",
+  occupation: "技术撰稿人",
+  hobbies: ["摄影", "观鸟", "棒球"],
 };
-
 const skills = ["HTML", "CSS", "JavaScript", "React", "Astro", "Writing Docs"];
-
-const happy = true;
-const finished = true;
-const goal = 3;
-
-const skillColor = "navy";
-
-const fontWeight = "bold";
-const textCase = "uppercase";
 ---
 
-<html lang="zh-cn">
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width" />
-        <title>{pageTitle}</title>
-        <style define:vars={{ skillColor, fontWeight, textCase }}>
-            h1 {
-                color: purple;
-                font-size: 4rem;
-            }
-            .skill {
-                color: var(--skillColor);
-                font-weight: var(--fontWeight);
-                text-transform: var(--textCase);
-            }
-        </style>
-         <ViewTransitions />
-    </head>
-    <body>
-        <Header />
-        <h1>{pageTitle}</h1>
-        <h2>……和我的新 Astro 网站！</h2>
-
-        <p>
-            我正在学习 Astro
-            的入门教程。这是我网站上的第二个页面，也是我自己建立的第一页面！
-        </p>
-
-        <p>
-            随着我完成更多教程，该站点将更新，所以请继续查看我的旅程将如何进行吧！
-        </p>
-        <p>以下是关于我的几个事实：</p>
-        <ul>
-            <li>我的名字是{identity.firstName}.</li>
-            <li>我住在{identity.country}。我的职业是{identity.occupation}。</li>
-            {
-                identity.hobbies.length >= 2 && (
-                    <li>
-                        我的两个习惯：{identity.hobbies[0]}和
-                        {identity.hobbies[1]}
-                    </li>
-                )
-            }
-        </ul>
-        <p>我的技能是：</p>
-        <ul>
-            {skills.map((skill) => <li>{skill}</li>)}
-        </ul>
-        {happy && <p>我非常乐意学习 Astro！</p>}
-
-        {finished && <p>我完成了这节教程！</p>}
-
-        {
-            goal === 3 ? (
-                <p>我的目标是在三天内完成。</p>
-            ) : (
-                <p>我的目标不是 3 天。</p>
-            )
-        }
-        <Footer />
-    </body>
-</html>
+<BaseLayout pageTitle={pageTitle}>
+  <section class="about">
+    <article class="card">
+      <h2 class="gradientText">你好，我是{identity.firstName}</h2>
+      <p>来自{identity.country} 的 {identity.occupation}，热爱 {identity.hobbies.join("、")}。</p>
+      <p>这个站点用 Astro 构建，用来记录学习与生活点滴。</p>
+      <div class="skills">
+        {skills.map((s) => <span class="chip">{s}</span>)}
+      </div>
+    </article>
+  </section>
+</BaseLayout>
+<style>
+  .about { margin-top: .5rem; }
+  .card {
+    background: rgba(0,0,0,.25);
+    border-radius: 16px;
+    padding: 1rem 1.25rem 1.25rem;
+    box-shadow: 0 6px 20px rgba(0,0,0,.18), inset 0 0 0 1px rgba(255,255,255,.06);
+  }
+  .skills { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .75rem; }
+  .chip { padding: .3rem .6rem; background: rgba(255,255,255,.06); border-radius: 999px; font-size: .9rem; }
+</style>

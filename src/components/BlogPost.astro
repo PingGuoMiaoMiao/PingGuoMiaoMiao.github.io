@@ -1,17 +1,38 @@
 ---
 const { title, url } = Astro.props;
 ---
-<li><a href={url} class="blog-article-style">{title}</a></li>
+<li class="post-item">
+  <a href={url} class="post-link">
+    <span class="post-title">{title}</span>
+    <span class="arrow">→</span>
+  </a>
+ </li>
 <style>
-.blog-article-style{
+  .post-item {
+    list-style: none;
+    margin: 0 0 12px 0;
+  }
+  .post-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .75rem;
+    padding: 14px 16px;
     text-decoration: none;
-    border-radius: 20%;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    font-weight: bold;
-}
-
-.blog-article-style:hover{
-
-
-}
+    border-radius: 12px;
+    background: rgba(0,0,0,.25);
+    box-shadow: 0 6px 18px rgba(0,0,0,.14), inset 0 0 0 1px rgba(255,255,255,.06);
+    transition: transform .15s ease, background .2s ease, box-shadow .2s ease;
+    color: #fff;
+  }
+  .post-link:hover {
+    transform: translateY(-1px);
+    background: rgba(255,255,255,.08);
+    box-shadow: 0 10px 24px rgba(0,0,0,.22), inset 0 0 0 1px rgba(255,255,255,.1);
+  }
+  .post-title {
+    font-weight: 700;
+    letter-spacing: .2px;
+  }
+  .arrow { opacity: .7; }
 </style>

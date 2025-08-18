@@ -1,0 +1,56 @@
+---
+const posts = await Astro.glob('../pages/posts/*.md');
+---
+
+<button id="openSearch" class="open-search" aria-label="搜索">🔍</button>
+<dialog id="searchModal">
+  <form method="dialog" class="modal">
+    <input id="searchInput" placeholder="搜索标题或描述…" />
+    <div id="searchList" class="list"></div>
+    <div class="actions">
+      <button value="close">关闭</button>
+    </div>
+  </form>
+  <script type="application/json" id="searchData">
+    {JSON.stringify(posts.map(p => ({ url: p.url, title: p.frontmatter.title, desc: p.frontmatter.description || '' })))}
+  </script>
+</dialog>
+
+<style>
+  .open-search { position: fixed; right: 16px; bottom: 120px; width: 40px; height: 40px; border-radius: 50%; border: none; color: #fff; background: rgba(0,0,0,.5); box-shadow: 0 10px 20px rgba(0,0,0,.25); cursor: pointer; }
+  dialog { border: none; background: transparent; }
+  .modal { width: min(720px, 92vw); margin: 10vh auto; background: rgba(0,0,0,.6); color: #fff; padding: 1rem; border-radius: var(--radius); box-shadow: 0 18px 40px rgba(0,0,0,.35), inset 0 0 0 1px rgba(255,255,255,.08); backdrop-filter: saturate(180%) blur(10px); }
+  input { width: 100%; padding: .6rem .7rem; border-radius: 10px; border: 1px solid rgba(255,255,255,.12); background: rgba(0,0,0,.25); color: #fff; }
+  .list { display: grid; gap: .5rem; margin-top: .7rem; max-height: 50vh; overflow: auto; }
+  .item { display: flex; gap: .5rem; padding: .6rem .7rem; border-radius: 10px; background: rgba(255,255,255,.06); text-decoration: none; color: #fff; }
+  .actions { display: flex; justify-content: flex-end; margin-top: .6rem; }
+</style>
+
+<script>
+  const bind = () => {
+    const btn = document.getElementById('openSearch');
+    const modal = document.getElementById('searchModal');
+    const input = document.getElementById('searchInput');
+    const list = document.getElementById('searchList');
+    const raw = document.getElementById('searchData');
+    if (!btn || !modal || !input || !list || !raw) return;
+    const data = JSON.parse(raw.textContent || '[]');
+    btn.addEventListener('click', () => (modal as HTMLDialogElement).showModal());
+    const render = (q: string) => {
+      const k = (q || '').toLowerCase();
+      const arr = k ? data.filter((d: any) => d.title.toLowerCase().includes(k) || d.desc.toLowerCase().includes(k)) : data.slice(0, 20);
+      list.innerHTML = '';
+      arr.forEach((d: any) => {
+        const a = document.createElement('a');
+        a.href = d.url; a.className = 'item'; a.textContent = d.title;
+        list.appendChild(a);
+      });
+    };
+    input.addEventListener('input', (e) => render((e.target as HTMLInputElement).value));
+    render('');
+  };
+  document.addEventListener('astro:page-load', bind);
+  document.addEventListener('astro:after-swap', bind);
+</script>
+
+

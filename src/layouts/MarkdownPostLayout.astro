@@ -5,30 +5,123 @@ const { frontmatter } = Astro.props;
 ---
 
 <BaseLayout pageTitle={frontmatter.title}>
-  <p>{frontmatter.pubDate.slice(0, 10)}</p>
-  <p transition:animate={fade({ duration: '2s' })} ><em>{frontmatter.description}</em></p>
-  <p>Written by: <a href="/about/">{frontmatter.author}</a></p>
-  <img src={frontmatter.image.url} width="300" alt={frontmatter.image.alt} />
-  <slot />
+  <section class="post-layout">
+    <aside class="toc" id="toc">
+      <h3>目录</h3>
+      <nav class="toc-list"><!-- 动态填充 --></nav>
+    </aside>
+    <article class="post">
+      <header class="post-header">
+        <div class="meta">
+          <time datetime={frontmatter.pubDate}>{frontmatter.pubDate.slice(0, 10)}</time>
+          <span> · </span>
+          <a href="/about/">{frontmatter.author}</a>
+        </div>
+        {frontmatter.description && (
+          <p transition:animate={fade({ duration: '1.2s' })} class="description">{frontmatter.description}</p>
+        )}
+        {frontmatter.image?.url && (
+          <img class="cover" src={frontmatter.image.url} alt={frontmatter.image.alt} />
+        )}
+      </header>
+      <div class="content" id="postContent">
+        <slot />
+      </div>
+    </article>
+  </section>
+  <script>
+    const slugify = (text: string) =>
+      text.toLowerCase()
+          .replace(/[^\w\u4e00-\u9fa5\s-]/g, '')
+          .trim()
+          .replace(/\s+/g, '-');
+
+    const buildTOC = () => {
+      const content = document.getElementById('postContent');
+      const tocNav = document.querySelector('#toc .toc-list');
+      if (!content || !tocNav) return;
+      const headings = content.querySelectorAll('h1, h2, h3');
+      tocNav.innerHTML = '';
+      headings.forEach((h) => {
+        if (!h.id) h.id = slugify(h.textContent || '');
+        const a = document.createElement('a');
+        a.href = `#${h.id}`;
+        a.textContent = h.textContent || '';
+        a.className = `toc-item level-${h.tagName.toLowerCase()}`;
+        tocNav.appendChild(a);
+      });
+    };
+
+    const enhanceCodeBlocks = () => {
+      const blocks = document.querySelectorAll('#postContent pre > code');
+      blocks.forEach((code) => {
+        const pre = code.parentElement;
+        if (!pre || pre.dataset.enhanced) return;
+        pre.dataset.enhanced = 'true';
+        pre.style.position = 'relative';
+        const btn = document.createElement('button');
+        btn.textContent = '复制';
+        btn.className = 'copy-btn';
+        btn.addEventListener('click', async () => {
+          try {
+            await navigator.clipboard.writeText(code.textContent || '');
+            btn.textContent = '已复制';
+            setTimeout(() => (btn.textContent = '复制'), 1200);
+          } catch {}
+        });
+        pre.appendChild(btn);
+      });
+    };
+
+    const bind = () => {
+      buildTOC();
+      enhanceCodeBlocks();
+    };
+    document.addEventListener('astro:page-load', bind);
+    document.addEventListener('astro:after-swap', bind);
+  </script>
 </BaseLayout>
 <style>
-  a {
-    color: #00539F;
+  .post-layout {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 1rem;
   }
-
-  .tags {
-    display: flex;
-    flex-wrap: wrap;
-    text-align: center;
-
+  @media (max-width: 920px) {
+    .post-layout { grid-template-columns: 1fr; }
+    .toc { order: 2; }
   }
-
-  .tag {
-    margin: 0.25em;
-    border: dotted 1px #a1a1a1;
-    border-radius: .5em;
-    padding: .5em 1em;
-    font-size: 1.15em;
-    background-color: #F8FCFD;
+  .toc {
+    background: rgba(0,0,0,.25);
+    border-radius: 16px;
+    padding: .8rem .9rem;
+    box-shadow: 0 6px 20px rgba(0,0,0,.18), inset 0 0 0 1px rgba(255,255,255,.06);
+    position: sticky; top: 76px; height: fit-content;
   }
+  .toc h3 { margin: .1rem 0 .4rem; }
+  .toc-list { display: flex; flex-direction: column; gap: .35rem; }
+  .toc-item { color: #e5e7eb; text-decoration: none; opacity: .9; }
+  .toc-item.level-h2 { padding-left: .5rem; }
+  .toc-item.level-h3 { padding-left: 1rem; font-size: .95em; }
+  .copy-btn {
+    position: absolute; top: 8px; right: 8px;
+    font-size: .8rem; padding: .2rem .5rem;
+    border-radius: 8px; border: none; cursor: pointer;
+    color: #0f172a; background: #e2e8f0;
+  }
+  a { color: #9ad3ff; }
+  .post { 
+    background: rgba(0,0,0,.25);
+    border-radius: 16px;
+    padding: 1.25rem 1.25rem 1.5rem;
+    box-shadow: 0 6px 20px rgba(0,0,0,.18), inset 0 0 0 1px rgba(255,255,255,.06);
+  }
+  .post-header { margin-bottom: 1rem; }
+  .meta { color: #cbd5e1; opacity: .9; }
+  .description { color: #e5e7eb; margin: .35rem 0 .5rem; font-style: italic; }
+  .cover { width: 100%; max-height: 360px; object-fit: cover; border-radius: 12px; margin: .5rem 0 0; }
+  .content :global(h2) { margin-top: 1.5rem; }
+  .content :global(p) { margin: .75rem 0; }
+  .tags { display: flex; flex-wrap: wrap; gap: .5rem; }
+  .tag { padding: .35rem .6rem; background: rgba(255,255,255,.06); border-radius: 999px; font-size: .9rem; }
 </style>

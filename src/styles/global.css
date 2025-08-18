@@ -5,8 +5,12 @@
   box-sizing: border-box;
 }
 body {
-  text-align: center;
-  background-image: url("/src/assets/wallhaven-jxkrzy_3840x1600.png");
+  text-align: left;
+  color: var(--main_text_color);
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Noto Sans", "PingFang SC", "Hiragino Sans GB", "Microsoft Yahei", sans-serif;
 }
 .hamburger {
   padding-right: 20px;
@@ -30,18 +34,16 @@ body {
 }
 
 .nav-links a {
-  -webkit-background-clip: text;  
-  -webkit-text-fill-color: transparent;  
-  background-image: var(--gradient);  
-  background-size: 200% 100%; /* 确保宽度足够大以容纳整个渐变周期 */  
-  animation: backgroundScroll 15s linear infinite; /* 调整持续时间和缓动函数 */  
-  display: block;
-  text-align: center;
-  padding: 10px 0;
+  color: #eaf2ff;
   text-decoration: none;
-  font-size: 1.2rem;
-  font-weight: bold;
+  display: inline-block;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.06);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
+  transition: background .2s ease, transform .15s ease, box-shadow .2s ease;
 }
+.nav-links a:hover { background: rgba(255,255,255,.12); transform: translateY(-1px); box-shadow: 0 6px 16px rgba(0,0,0,.25), inset 0 0 0 1px rgba(255,255,255,.12); }
 
 .nav-links a:hover, a:focus {
   background-color: #76d8ff;
@@ -80,8 +82,7 @@ html.dark {
   ---gradient: linear-gradient(120deg, #bd34fe, #e0321b 30%, #41d1ff 60%);  
   --id: 1;  
   --name: 主题1;  
-  --main_bg_color: url(./background.jpg);  
-  --main_text_color: #eeeeee;  
+  --main_text_color: #eaeaf0;  
   --gradient: linear-gradient(120deg, #bd34fe, #e0321b 30%, #41d1ff 60%);  
   --purple_text_color: #747bff;  
   --text_bg_color: #00000040;  
@@ -95,17 +96,71 @@ html.dark {
   --back_filter: 0px;  
   --back_filter_color: #00000050;  
   --fill: #ffffff;  
+  --radius: 14px;
+  --surface: rgba(0,0,0,.25);
+  --surface-strong: rgba(0,0,0,.35);
+  --surface-hover: rgba(255,255,255,.12);
+  --border: rgba(255,255,255,.08);
+  --container-max: 1200px;
 }  
 
 .gradientText {  
--webkit-background-clip: text;  
--webkit-text-fill-color: transparent;  
-background-image: var(--gradient);  
-background-size: 200% 100%; /* 确保宽度足够大以容纳整个渐变周期 */  
-animation: backgroundScroll 15s linear infinite; /* 调整持续时间和缓动函数 */  
+  -webkit-background-clip: text;  
+  -webkit-text-fill-color: transparent;  
+  background-image: var(--gradient);  
+  background-size: 300% 100%;
+  animation: gradientFlow 12s linear infinite;
 }  
 
-@keyframes backgroundScroll {  
-0% { background-position: 0% 0%; }  
-100% { background-position: 100% 0%; } /* 确保背景位置完全移动到另一侧 */  
+@keyframes gradientFlow {  
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
+
+/* 背景遮罩，提升文字可读性 */
+.backdrop-overlay {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(1200px 800px at 50% -10%, rgba(0,0,0,.2), rgba(0,0,0,.55)),
+              linear-gradient(to bottom, rgba(0,0,0,.25), rgba(0,0,0,.65));
+  pointer-events: none;
+  z-index: 0;
+}
+
+html.hide-carousel .carousel { display: none !important; }
+
+/* 全局排版细节 */
+h1, h2, h3 {
+  color: #fff;
+}
+
+h1 { font-size: clamp(2rem, 4vw, 3rem); line-height: 1.2; }
+h2 { font-size: clamp(1.5rem, 3vw, 2rem); line-height: 1.25; }
+h3 { font-size: clamp(1.2rem, 2.2vw, 1.35rem); }
+p { margin: .6rem 0; }
+.section-title { margin: .25rem 0 .75rem; font-weight: 800; }
+
+a {
+  color: #9ad3ff;
+}
+
+a:hover {
+  color: #c9e7ff;
+}
+
+ul { padding-left: 1.2rem; }
+
+/* 容器适配移动端 */
+@media (max-width: 640px) {
+  .nav-links a { padding: 12px 0; }
+}
+
+/* 统一圆角与卡片风格 */
+.card, .post, .site-header, .toc, .post-card, .chip, .copy-btn {
+  border-radius: var(--radius) !important;
+}
+
+/* 卡片入场动画，柔和上浮 */
+.card-appear { opacity: 0; transform: translateY(6px); animation: cardIn .35s ease forwards; }
+@keyframes cardIn { to { opacity: 1; transform: translateY(0); } }

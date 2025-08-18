@@ -2,17 +2,17 @@
 import Social from './Social.astro';
 ---
 
-<footer>
-    
-    <p> (๑¯ω¯๑)PingGuoMiaoMiao的
-      <Social platform="github" username="PingGuoMiaoMiao" />
-    </p>
+<footer class="site-footer">
+  <div class="inner">
+    <p> (๑¯ω¯๑) PingGuoMiaoMiao 的 <Social platform="github" username="PingGuoMiaoMiao" /></p>
+    <small>© {new Date().getFullYear()} PingGuoMiaoMiao. 保留所有权利。</small>
+  </div>
+  <div class="hairline" />
 </footer>
 <style>
-    footer {
-      display: flex;
-      gap: 1rem;
-      margin-top: 1rem;
-      justify-content: center;
-    }
-  </style>
+  .site-footer { margin-top: 2rem; position: relative; }
+  .inner { display: flex; flex-direction: column; align-items: center; gap: .25rem; }
+  .hairline { position: absolute; inset-inline: 0; top: -1px; height: 1px; background: linear-gradient(to right, transparent, rgba(255,255,255,.35), transparent); opacity: .5; }
+  .site-footer p, .site-footer small { color: #e5e7eb; opacity: .9; }
+  a { color: #9ad3ff; }
+</style>

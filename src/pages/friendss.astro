@@ -18,74 +18,68 @@ const friends = [
 ];
 ---
 
-<BaseLayout title="朋友们">
-    <div class="markdown-body"></div>
-    <div class="flex justify-center items-center" id="friends-box">
-        <div class="flex flex-wrap justify-center items-center gap-4 m-6 max-w-[720px]" id="friends-boxs">
-            {
-                friends.map(friend => (
-                    <div class="friend-card" id="style-friend">
-                        <img alt={friend.name} src={friend.avatar} class="avatar" id="style-boxs"/>
-                        <div class="friend-info" id="element">
-                            <a href={friend.link} class="friend-name" id="element-font">
-                                {friend.name}
-                            </a>
-                            <p>{friend.about}</p>
-                        </div>
-                    </div>
-                ))
-            }
-        </div>
+<BaseLayout pageTitle="朋友们">
+  <section class="friends">
+    <div class="grid">
+      {friends.map((friend) => (
+        <a class="card" href={friend.link} target="_blank" rel="noopener">
+          <img alt={friend.name} src={`/${friend.avatar}`} class="avatar" />
+          <div class="info">
+            <strong class="name">{friend.name}</strong>
+            <p class="about">{friend.about}</p>
+            <span class="status" data-url={friend.link}>检测中…</span>
+          </div>
+          <img class="favicon" src={`https://www.google.com/s2/favicons?sz=32&domain_url=${encodeURIComponent(friend.link)}`} alt="icon" />
+        </a>
+      ))}
     </div>
-    <ViewTransitions />
+  </section>
+  <ViewTransitions />
 </BaseLayout>
+<script>
+  const checkStatus = async (el: HTMLElement, url: string) => {
+    try {
+      const res = await fetch(url, { method: 'HEAD', mode: 'no-cors' });
+      el.textContent = '在线';
+      el.classList.add('ok');
+    } catch {
+      el.textContent = '异常';
+      el.classList.add('bad');
+    }
+  };
+  const bind = () => {
+    document.querySelectorAll('.status').forEach((s) => {
+      const el = s as HTMLElement;
+      const url = el.getAttribute('data-url');
+      if (url) checkStatus(el, url);
+    });
+  };
+  document.addEventListener('astro:page-load', bind);
+  document.addEventListener('astro:after-swap', bind);
+</script>
 
 <style>
-#friends-box {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.friends { margin-top: .5rem; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; }
+.card {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  padding: 1rem;
+  border-radius: var(--radius);
+  background: var(--surface);
+  text-decoration: none;
+  color: #fff;
+  box-shadow: 0 8px 20px rgba(0,0,0,.2), inset 0 0 0 1px var(--border);
+  transition: transform .15s ease, background .2s ease, box-shadow .2s ease;
 }
-
-#friends-boxs {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    gap: 1rem;
-    margin: 1.5rem;
-    max-width: 720px;
-}
-
-.friend-card {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    height: 6rem;
-    padding: 0.75rem;
-    border-radius: 1.25rem;
-    width: 260px;
-    box-shadow: none;
-    transition: box-shadow 0.3s ease;
-}
-
-.friend-card:hover {
-    box-shadow: 0 25px 50px -12px rgba(255, 255, 255, 0.25);
-    color: aqua;
-}
-
-.avatar {
-    height: 4rem;
-    width: 4rem;
-    border-radius: 50%;
-}
-
-.friend-info {
-    display: flex;
-    flex-direction: column;
-}
-
-.friend-name {
-    font-weight: bold;
-}
+.card:hover { transform: translateY(-2px); background: var(--surface-hover); box-shadow: 0 14px 26px rgba(0,0,0,.28), inset 0 0 0 1px rgba(255,255,255,.1); }
+.avatar { height: 48px; width: 48px; border-radius: 50%; object-fit: cover; }
+.info { display: flex; flex-direction: column; }
+.name { font-weight: 800; letter-spacing: .2px; }
+.about { margin: .1rem 0 0; opacity: .9; }
+.status { margin-top: .25rem; font-size: .85rem; opacity: .85; }
+.status.ok { color: #86efac; }
+.status.bad { color: #fca5a5; }
+.favicon { margin-left: auto; width: 16px; height: 16px; opacity: .9; }
 </style>

@@ -1,14 +1,14 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import BlogPost from '../../components/BlogPost.astro';
+import PostCard from '../../components/PostCard.astro';
+import type { MarkdownInstance } from 'astro';
 
-export async function getStaticPaths() {
-  const allPosts:any = await Astro.glob('../posts/*.md');
-  
-  const uniqueTags = [...new Set(allPosts.map((post: { frontmatter: { tags: any; }; }) => post.frontmatter.tags).flat())];
+export async function getStaticPaths(): Promise<{ params: { tag: string }; props: { posts: MarkdownInstance<Record<string, any>>[] } }[]> {
+  const allPosts = await Astro.glob('../posts/*.md');
+  const uniqueTags: string[] = [...new Set(allPosts.map((post: { frontmatter: { tags?: string[] } }) => post.frontmatter.tags || []).flat())];
 
-  return uniqueTags.map((tag) => {
-    const filteredPosts = allPosts.filter((post: { frontmatter: { tags: unknown[]; }; }) => post.frontmatter.tags.includes(tag));
+  return uniqueTags.map((tag: string) => {
+    const filteredPosts = allPosts.filter((post: { frontmatter: { tags?: string[] } }) => (post.frontmatter.tags || []).includes(tag));
     return {
       params: { tag },
       props: { posts: filteredPosts },
@@ -17,11 +17,16 @@ export async function getStaticPaths() {
 }
 
 const { tag } = Astro.params;
-const { posts } = Astro.props;
+const { posts } = Astro.props as { posts: MarkdownInstance<Record<string, any>>[] };
 ---
 <BaseLayout pageTitle={tag}>
   <p>包含「{tag}」标签的文章</p>
-  <ul>
-    {posts.map((post: { url: any; frontmatter: { title: any; }; }) => <BlogPost url={post.url} title={post.frontmatter.title}/>)}
-  </ul>
+  <div class="grid">
+    {posts.map((post: any) => (
+      <PostCard href={post.url} frontmatter={post.frontmatter} />
+    ))}
+  </div>
 </BaseLayout>
+<style>
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1rem; margin-top: .5rem; }
+</style>

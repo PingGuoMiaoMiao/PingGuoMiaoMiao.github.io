@@ -1,0 +1,35 @@
+---
+---
+
+<button id="toTop" aria-label="回到顶部" title="回到顶部">
+  ↑
+  <style>
+    #toTop {
+      position: fixed; right: 16px; bottom: 16px; width: 40px; height: 40px; border-radius: 50%;
+      border: none; color: #fff; background: rgba(0,0,0,.5); box-shadow: 0 10px 20px rgba(0,0,0,.25);
+      cursor: pointer; display: none; align-items: center; justify-content: center; font-size: 16px;
+      transition: transform .15s ease, background .2s ease;
+      backdrop-filter: saturate(180%) blur(6px);
+    }
+    #toTop:hover { transform: translateY(-1px); background: rgba(255,255,255,.18); }
+  </style>
+</button>
+
+<script>
+  const bind = () => {
+    const btn = document.getElementById('toTop');
+    if (!btn) return;
+    const toggle = () => {
+      const y = window.scrollY || document.documentElement.scrollTop;
+      btn.style.display = y > 200 ? 'flex' : 'none';
+    };
+    const toTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.addEventListener('scroll', toggle, { passive: true });
+    btn.addEventListener('click', toTop);
+    toggle();
+  };
+  document.addEventListener('astro:page-load', bind);
+  document.addEventListener('astro:after-swap', bind);
+</script>
+
+

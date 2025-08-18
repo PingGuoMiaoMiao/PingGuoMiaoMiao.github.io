@@ -1,0 +1,52 @@
+---
+---
+
+<div class="progress-container" aria-hidden="true">
+  <div class="bar" id="progressBar"></div>
+  <div class="glow"></div>
+  <div class="hairline"></div>
+</div>
+
+<style>
+  .progress-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    z-index: 20;
+    pointer-events: none;
+  }
+  .bar {
+    height: 100%;
+    width: 0%;
+    background-image: var(--gradient);
+    transition: width .08s linear;
+  }
+  .glow { position: absolute; inset: 0; filter: blur(4px); opacity: .6; background-image: var(--gradient); mask: linear-gradient(#000, transparent); }
+  .hairline { position: absolute; bottom: -1px; left: 0; right: 0; height: 1px; background: linear-gradient(to right, transparent, rgba(255,255,255,.35), transparent); opacity: .45; }
+</style>
+
+<script>
+  const bind = () => {
+    const bar = document.getElementById('progressBar');
+    if (!bar) return;
+    const update = () => {
+      const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const progress = height > 0 ? (scrollTop / height) * 100 : 0;
+      bar.style.width = progress + '%';
+    };
+    window.addEventListener('scroll', update, { passive: true });
+    update();
+  };
+  document.addEventListener('astro:page-load', bind);
+  document.addEventListener('astro:after-swap', bind);
+  document.addEventListener('astro:before-preparation', () => {
+    const bar = document.getElementById('progressBar');
+    if (bar) bar.style.width = '0%';
+  });
+  
+</script>
+
+

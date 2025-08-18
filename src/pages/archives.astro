@@ -1,0 +1,54 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+const posts = await Astro.glob('../pages/posts/*.md');
+// 按日期倒序
+posts.sort((a: any, b: any) => new Date(b.frontmatter.pubDate).getTime() - new Date(a.frontmatter.pubDate).getTime());
+// 分组到 年 -> 月 -> 列表
+const groups: Record<string, Record<string, typeof posts>> = {};
+for (const p of posts) {
+  const d = new Date(p.frontmatter.pubDate);
+  const year = String(d.getFullYear());
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  groups[year] ||= {};
+  groups[year][month] ||= [] as any;
+  groups[year][month].push(p as any);
+}
+const pageTitle = "归档";
+---
+<BaseLayout pageTitle={pageTitle}>
+  <section class="archives">
+    {Object.keys(groups).sort((a,b)=> Number(b)-Number(a)).map((year) => (
+      <div class="year-block">
+        <h2>{year}</h2>
+        <div class="months">
+          {Object.keys(groups[year]).sort((a,b)=> Number(b)-Number(a)).map((m) => (
+            <div class="month">
+              <h3>{m} 月</h3>
+              <ul>
+                {groups[year][m].map((p: any) => (
+                  <li>
+                    <a href={p.url}>{p.frontmatter.title}</a>
+                    <span class="date">{String(p.frontmatter.pubDate).slice(0,10)}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </div>
+    ))}
+  </section>
+</BaseLayout>
+<style>
+  .archives { display: flex; flex-direction: column; gap: 1rem; }
+  .year-block { background: var(--surface); border-radius: var(--radius); padding: .9rem 1rem; box-shadow: inset 0 0 0 1px var(--border); }
+  .months { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: .75rem; margin-top: .5rem; }
+  .month { background: rgba(255,255,255,.04); border-radius: var(--radius); padding: .6rem .7rem; box-shadow: inset 0 0 0 1px var(--border); }
+  .month h3 { margin-bottom: .35rem; }
+  ul { list-style: none; padding: 0; display: grid; gap: .35rem; }
+  li { display: flex; justify-content: space-between; gap: .5rem; }
+  a { text-decoration: none; color: #eaf2ff; }
+  .date { opacity: .8; font-size: .9rem; }
+</style>
+
+

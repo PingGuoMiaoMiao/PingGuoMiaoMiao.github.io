@@ -1,0 +1,44 @@
+---
+interface Social { label: string; href: string }
+interface Props {
+  avatar?: string;
+  name?: string;
+  bio?: string;
+  socials?: Social[];
+}
+const {
+  avatar = '/小南娘图.jpg',
+  name = '苹果喵喵',
+  bio = '分享技术、生活与随想，做一个可爱的创作者。',
+  socials = [
+    { label: 'GitHub', href: 'https://github.com/PingGuoMiaoMiao' },
+  ],
+} = Astro.props as Props;
+---
+
+<section class="profile">
+  <img class="avatar" src={avatar} alt={name} width="92" height="92" />
+  <h2 class="name">{name}</h2>
+  <p class="bio">{bio}</p>
+  <div class="actions">
+    {socials.map((s) => (<a class="btn" href={s.href} target="_blank" rel="noopener">{s.label}</a>))}
+  </div>
+</section>
+
+<style>
+  .profile {
+    background: rgba(0,0,0,.28);
+    border-radius: var(--radius);
+    padding: 1rem 1.1rem 1.2rem;
+    box-shadow: 0 10px 24px rgba(0,0,0,.24), inset 0 0 0 1px rgba(255,255,255,.06);
+    text-align: center;
+  }
+  .avatar { border-radius: 50%; object-fit: cover; box-shadow: 0 6px 18px rgba(0,0,0,.3); }
+  .name { margin: .6rem 0 .3rem; font-size: 1.25rem; }
+  .bio { opacity: .9; }
+  .actions { display: flex; gap: .5rem; justify-content: center; margin-top: .7rem; }
+  .btn { text-decoration: none; padding: .45rem .8rem; border-radius: 999px; background: rgba(255,255,255,.1); color: #fff; }
+  .btn:hover { background: rgba(255,255,255,.18); }
+</style>
+
+

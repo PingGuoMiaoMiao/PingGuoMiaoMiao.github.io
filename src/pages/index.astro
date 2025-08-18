@@ -5,41 +5,32 @@ import Greeting from '../components/Greeting';
 import Loading from '../components/Loading.astro';
 import { any } from 'astro/zod';
 import BackgroundCarousel from '../components/Background_Carousel.astro';
+import PostCard from '../components/PostCard.astro';
+import ProfileCard from '../components/ProfileCard.astro';
 const pageTitle = "苹果喵喵Blog";
+const posts = await Astro.glob('./posts/*.md');
 ---
 <BaseLayout pageTitle={pageTitle}>
-  <Greeting client:load messages={["Hej", "Hallo", "Hola", "Habari"]} />
-  <div class="grid-container">
-    <div class="item1">Header</div>
-    <div class="item2">Menu</div>
-    <div class="item3">Main</div>  
-    <div class="item4">Right</div>
-  </div>
+  <section class="home-grid">
+    <aside class="left">
+      <ProfileCard />
+    </aside>
+    <div class="right">
+      <h3 class="section-title">最新文章</h3>
+      <div class="grid two-cols">
+        {posts.slice(0, 6).map((p: any) => (
+          <PostCard href={p.url} frontmatter={p.frontmatter} />
+        ))}
+      </div>
+    </div>
+  </section>
   <ViewTransitions />
 </BaseLayout>
 <style>
-.item1 { grid-area: header; }
-.item2 { grid-area: menu; }
-.item3 { grid-area: main; }
-.item4 { grid-area: right; }
-
-
-.grid-container {
-  display: grid;
-  grid-template-areas:
-    'header'
-    'main'
-    'menu '
-    'right';
-  grid-gap: 10px;
-  background-color: #2196F3;
-  padding: 10px;
-}
-
-.grid-container > div {
-  background-color: rgba(255, 255, 255, 0.8);
-  text-align: center;
-  padding: 20px 0;
-  font-size: 30px;
-}
+  .home-grid { display: grid; grid-template-columns: 280px 1fr; gap: 1rem; }
+  @media (max-width: 920px) { .home-grid { grid-template-columns: 1fr; } }
+  .section-title { margin: .25rem 0 .75rem; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1rem; }
+  .grid.two-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  @media (max-width: 920px) { .grid.two-cols { grid-template-columns: 1fr; } }
 </style>

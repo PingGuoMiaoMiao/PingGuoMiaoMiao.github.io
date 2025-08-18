@@ -1,0 +1,51 @@
+---
+interface Frontmatter {
+  title: string;
+  description?: string;
+  image?: { url?: string; alt?: string };
+  pubDate?: string;
+  tags?: string[];
+}
+
+const { href, frontmatter } = Astro.props as { href: string; frontmatter: Frontmatter };
+---
+
+<a class="post-card" href={href}>
+  {frontmatter.image?.url && (
+    <img class="cover" src={frontmatter.image.url} alt={frontmatter.image?.alt ?? frontmatter.title} loading="lazy" />
+  )}
+  <div class="content">
+    <h4 class="title">{frontmatter.title}</h4>
+    {frontmatter.description && <p class="desc">{frontmatter.description}</p>}
+    {frontmatter.tags && (
+      <div class="tags">
+        {frontmatter.tags.slice(0, 3).map((t) => (
+          <span class="tag">{t}</span>
+        ))}
+      </div>
+    )}
+  </div>
+</a>
+
+<style>
+  .post-card {
+    display: grid;
+    grid-template-rows: 160px auto;
+    gap: .75rem;
+    padding: .9rem;
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: 0 10px 22px rgba(0,0,0,.24), inset 0 0 0 1px var(--border);
+    text-decoration: none;
+    color: #fff;
+    transition: transform .15s ease, background .2s ease, box-shadow .2s ease;
+  }
+  .post-card:hover { transform: translateY(-2px); background: var(--surface-hover); box-shadow: 0 14px 26px rgba(0,0,0,.28), inset 0 0 0 1px rgba(255,255,255,.1); }
+  .cover { width: 100%; height: 180px; object-fit: cover; border-radius: 12px; }
+  .title { margin: 0; font-size: 1.05rem; line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .desc { margin: .35rem 0 0; color: #e8eef6; opacity: .9; font-size: .92rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .tags { display: flex; gap: .4rem; margin-top: .6rem; }
+  .tag { padding: .16rem .5rem; border-radius: 999px; background: rgba(255,255,255,.06); font-size: .8rem; }
+</style>
+
+

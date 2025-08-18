@@ -4,6 +4,10 @@ import Footer from "../components/Footer.astro";
 import "../styles/global.css";
 import { ViewTransitions } from "astro:transitions";
 import BackgroundCarousel from '../components/Background_Carousel.astro';
+import ProgressBar from '../components/ProgressBar.astro';
+import BackToTop from '../components/BackToTop.astro';
+import SettingsPanel from '../components/SettingsPanel.astro';
+import SearchModal from '../components/SearchModal.astro';
 const { pageTitle } = Astro.props;
 ---
 
@@ -13,50 +17,47 @@ const { pageTitle } = Astro.props;
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <title>{pageTitle}</title>
     <ViewTransitions /> 
-    <BackgroundCarousel />
   </head>
   <body>
+    <BackgroundCarousel />
     <Header />
-    <div class="grid-container">
-      <div class="item1">header</header></div>
-      <div class="item2">Menu</div>
-      <div class="item3">
-        <h1 transition:animate="slide" style="position: relative;z-index: 1;" class="gradientText">{pageTitle}</h1>
-            <slot />
-      </div>  
-      <div class="item4">Right</div>
-    </div>
-
+    <ProgressBar />
+    <main class="container">
+      {pageTitle && (
+        <h1 transition:animate="slide" class="page-title gradientText">{pageTitle}</h1>
+      )}
+      <slot />
+    </main>
     <Footer />
-    <script>
+    <script type="module">
       import "../scripts/menu.js";
     </script>
+    <BackToTop />
+    <SearchModal />
+    <SettingsPanel />
   </body>
 </html>
 <style>
-  .item1 { grid-area: header; }
-  .item2 { grid-area: menu; }
-  .item3 { grid-area: main; }
-  .item4 { grid-area: right; }
-  
-  
-  .grid-container {
-    display: grid;
-    grid-template-areas:
-      'header main main main right right'
-      'menu main main main right right'
-      'menu main main main right right'
-      'menu main main main right right';
-    grid-gap: 10px;
-    padding: 10px;
+  .container {
+    width: min(var(--container-max), 92%);
+    margin: 0 auto;
+    padding: 2rem 0 3rem;
+    position: relative;
+    z-index: 1;
   }
-  
-  .grid-container > div {
-    text-align: center;
-    padding: 20px 0;
-    font-size: 30px;
+  .page-title {
+    font-size: clamp(2rem, 4vw, 3rem);
+    line-height: 1.2;
+    margin: 1rem 0 2rem;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+    text-align: left;
+    text-shadow: 0 1px 0 rgba(0,0,0,.05);
   }
-  </style>
+</style>
   

@@ -1,35 +1,18 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 const allPosts = await Astro.glob('../posts/*.md');
-const tags = [...new Set(allPosts.map((post) => post.frontmatter.tags).flat())];
-const pageTitle = "Tag Index";
+const tags = [...new Set(allPosts.map((post: { frontmatter: { tags?: string[] } }) => post.frontmatter.tags || []).flat())].sort();
+const pageTitle = "所有标签";
 ---
 <BaseLayout pageTitle={pageTitle}>
-  <div class="tags">
+  <div class="grid">
     {tags.map((tag) => (
-      <p class="tag"><a href={`/tags/${tag}`}>{tag}</a></p>
+      <a class="chip" href={`/tags/${tag}`}>#{tag}</a>
     ))}
   </div>
 </BaseLayout>
 <style>
-  a {
-    text-decoration: none;
-  }
-
-  .tags {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  .tags:hover {
-    color: black
-  }
-
-  .tag {
-    margin: 0.25em;
-    border-radius: .5em;
-    padding: .5em 1em;
-    font-size: 1.15em;
-  }
+  .grid { display: flex; flex-wrap: wrap; gap: .6rem; }
+  .chip { text-decoration: none; padding: .45rem .8rem; border-radius: 999px; background: rgba(255,255,255,.06); color: #fff; box-shadow: inset 0 0 0 1px rgba(255,255,255,.06); }
+  .chip:hover { background: rgba(255,255,255,.1); }
 </style>
