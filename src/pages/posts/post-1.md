@@ -1,29 +1,23 @@
 ---
 layout: ../../layouts/MarkdownPostLayout.astro
-title: '我的第一篇博客文章'
+title: 'rust嵌入式的书'
 pubDate: 2022-07-01
 description: '这是我 Astro 博客的第一篇文章。'
-author: 'Astro 学习者'
+author: '苹果喵喵'
 image:
     url: 'https://docs.astro.build/assets/full-logo-light.png'
     alt: 'The full Astro logo.'
-tags: ["astro", "blogging", "learning in public"]
+tags: ["嵌入式", "book", "rust"]
 ---
 
-# 我的第一篇博客文章
+# 要看的书的网站
 
 
-
- 欢迎来到我学习关于 Astro 的新博客！在这里，我将分享我建立新网站的学习历程。
-
- ## 我做了什么
-
- 1. **安装 Astro**：首先，我创建了一个新的 Astro 项目并设置好了我的在线账号。
-
- 2. **制作页面**：然后我学习了如何通过创建新的 `.astro` 文件并将它们保存在 `src/pages/` 文件夹里来制作页面。
-
- 3. **发表博客文章**：这是我的第一篇博客文章！我现在有用 Astro 编写的页面和用 Markdown 写的文章了！
-
- ## 下一步计划
-
- 我将完成 Astro 教程，然后继续编写更多内容。关注我以获取更多信息。
+1. # impl Rust for ESP32# 为 ESP32 实现 Rust https://esp32.implrust.com/
+2. # The Rust on ESP Book 简体中文版 https://narukara.github.io/rust-on-esp-book-zh-cn/
+3. # The Embedded Rust Book# 《嵌入式 Rust 书籍》 https://docs.rust-embedded.org/book/print.html
+4. # The Rust Programming Language https://rust-book.cs.brown.edu/ch04-02-references-and-borrowing.html
+5. # The Embedonomicon  《嵌入百科全书》 https://docs.rust-embedded.org/embedonomicon/
+6. # Espressif 上的嵌入式 Rust https://docs.esp-rs.org/std-training/
+7. # 嵌入式 Rust (no_std) on Espressif https://docs.espressif.com/projects/rust/no_std-training/
+8. # 《ESP Rust 书籍》 https://docs.espressif.com/projects/rust/book/installation/riscv-and-xtensa.html
