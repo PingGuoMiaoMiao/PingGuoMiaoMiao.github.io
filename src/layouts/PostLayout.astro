@@ -1,6 +1,5 @@
 ---
 import BaseLayout from "./BaseLayout.astro";
-import { parseComponentReferences } from "../utils/markdown";
 import type { PostFrontmatter } from "../utils/markdown";
 
 interface Props {
@@ -12,9 +11,6 @@ interface Props {
 }
 
 const { frontmatter, content, id, prevPost, nextPost } = Astro.props;
-
-// 解析组件引用
-const componentRefs = parseComponentReferences(content);
 
 // 生成 SEO 元数据
 const pageTitle = `${frontmatter.title} | 苹果喵喵Blog`;
@@ -105,17 +101,10 @@ const pageUrl = `${siteUrl}/post/${id}`;
     const views = parseInt(localStorage.getItem(viewKey) || '0', 10) + 1;
     localStorage.setItem(viewKey, views.toString());
     
-    // 目录生成
-    const slugify = (text: string) =>
-      text.toLowerCase()
-          .replace(/[^\w\u4e00-\u9fa5\s-]/g, '')
-          .trim()
-          .replace(/\s+/g, '-');
-
+    // 目录生成（预留功能）
     const buildTOC = () => {
       const content = document.getElementById('postContent');
       if (!content) return;
-      const headings = content.querySelectorAll('h1, h2, h3');
       // 可以在这里添加目录功能
     };
 

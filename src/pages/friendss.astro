@@ -39,7 +39,7 @@ const friends = [
 <script>
   const checkStatus = async (el: HTMLElement, url: string) => {
     try {
-      const res = await fetch(url, { method: 'HEAD', mode: 'no-cors' });
+      await fetch(url, { method: 'HEAD', mode: 'no-cors' }).catch(() => {});
       el.textContent = '在线';
       el.classList.add('ok');
     } catch {

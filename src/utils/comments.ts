@@ -40,7 +40,7 @@ export function addComment(comment: Omit<Comment, 'id' | 'date'>): Comment {
 
   const newComment: Comment = {
     ...comment,
-    id: `comment_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+    id: `comment_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`,
     date: new Date().toISOString(),
   };
 

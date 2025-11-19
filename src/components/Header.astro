@@ -112,11 +112,8 @@ import Navigation from './Navigation.astro';
       if (link.dataset.animated === 'true') return;
       link.dataset.animated = 'true';
       
-      // 保存原始 HTML 结构
-      const originalHTML = link.innerHTML;
-      
       // 分割文本为字符
-      function splitTextIntoChars(element) {
+      function splitTextIntoChars() {
         const chars = [];
         
         // 递归处理所有子节点
@@ -178,7 +175,7 @@ import Navigation from './Navigation.astro';
       }
       
       // 获取所有字符
-      const chars = splitTextIntoChars(link);
+      const chars = splitTextIntoChars();
       
       if (chars.length === 0) {
         return;

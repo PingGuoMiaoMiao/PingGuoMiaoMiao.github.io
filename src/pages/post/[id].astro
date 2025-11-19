@@ -1,7 +1,7 @@
 ---
 import PostLayout from "../../layouts/PostLayout.astro";
 import Comments from "../../components/Comments.astro";
-import { processPosts, getPostById, getAdjacentPosts } from "../../utils/posts";
+import { processPosts, getAdjacentPosts } from "../../utils/posts";
 import { parseComponentReferences, replaceComponentReferences } from "../../utils/markdown";
 
 export async function getStaticPaths() {
@@ -95,13 +95,13 @@ for (const ref of componentRefs) {
   <Comments postId={post.id} />
 </PostLayout>
 
-<script define:vars={{ componentRefs, processedContent }}>
+<script is:inline define:vars={{ componentRefs, processedContent }}>
   // 客户端处理组件占位符替换
   document.addEventListener('DOMContentLoaded', () => {
     const content = document.getElementById('postContent');
     if (!content || componentRefs.length === 0) return;
     
-    componentRefs.forEach((ref, index) => {
+    componentRefs.forEach((_ref, index) => {
       const placeholder = `<!-- COMPONENT_PLACEHOLDER_${index} -->`;
       const placeholderEl = document.querySelector(`[data-placeholder="${placeholder}"]`);
       

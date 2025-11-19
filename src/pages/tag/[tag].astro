@@ -1,6 +1,5 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import PostCard from '../../components/PostCard.astro';
 import { processPosts, getPostsByTag, getAllTags } from '../../utils/posts';
 
 export async function getStaticPaths() {
@@ -18,8 +17,9 @@ export async function getStaticPaths() {
     if (posts.length === 0) {
       return null;
     }
+    // 使用原始标签名作为参数，Astro 会自动处理编码
     return {
-      params: { tag: encodeURIComponent(tag) },
+      params: { tag },
       props: { tag, posts },
     };
   }).filter(Boolean);
