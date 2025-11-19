@@ -1,0 +1,219 @@
+---
+interface Props {
+  postId: string;
+}
+
+const { postId } = Astro.props;
+---
+
+<div class="comments-section neo-card neo-brutalist">
+  <header class="neo-card-header">
+    <h3>评论</h3>
+  </header>
+  <div class="neo-card-body">
+    <div class="comments-list" id={`comments-list-${postId}`}>
+      <!-- 评论将动态加载 -->
+    </div>
+    <form class="comment-form" id={`comment-form-${postId}`}>
+      <input 
+        type="text" 
+        id={`comment-author-${postId}`}
+        placeholder="你的名字" 
+        required 
+        class="neo-input comment-input"
+      />
+      <textarea 
+        id={`comment-content-${postId}`}
+        placeholder="写下你的评论..." 
+        required 
+        rows="4"
+        class="neo-input comment-textarea"
+      ></textarea>
+      <button type="submit" class="neo-btn comment-submit" style="background-color: var(--neo-primary); color: var(--neo-black);">
+        发布评论
+      </button>
+    </form>
+  </div>
+</div>
+
+<script>
+  import { getComments, addComment } from '../utils/comments';
+
+  const postId = '{postId}';
+  const commentsList = document.getElementById(`comments-list-${postId}`);
+  const commentForm = document.getElementById(`comment-form-${postId}`) as HTMLFormElement;
+  const authorInput = document.getElementById(`comment-author-${postId}`) as HTMLInputElement;
+  const contentInput = document.getElementById(`comment-content-${postId}`) as HTMLTextAreaElement;
+
+  // 加载评论
+  function loadComments() {
+    if (!commentsList) return;
+    
+    const comments = getComments(postId);
+    if (comments.length === 0) {
+      commentsList.innerHTML = '<p class="no-comments">暂无评论，快来抢沙发吧~</p>';
+      return;
+    }
+
+    commentsList.innerHTML = comments
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+      .map((comment) => {
+        const date = new Date(comment.date).toLocaleString('zh-CN');
+        return `
+          <div class="comment-item neo-brutalist">
+            <div class="comment-header">
+              <span class="comment-author">${escapeHtml(comment.author)}</span>
+              <span class="comment-date">${date}</span>
+            </div>
+            <div class="comment-content">${escapeHtml(comment.content)}</div>
+          </div>
+        `;
+      })
+      .join('');
+  }
+
+  function escapeHtml(text: string): string {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  // 提交评论
+  if (commentForm) {
+    commentForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const author = authorInput.value.trim();
+      const content = contentInput.value.trim();
+      
+      if (!author || !content) {
+        alert('请填写完整信息');
+        return;
+      }
+
+      try {
+        addComment({ postId, author, content });
+        authorInput.value = '';
+        contentInput.value = '';
+        loadComments();
+      } catch (error) {
+        console.error('提交评论失败:', error);
+        alert('评论提交失败，请重试');
+      }
+    });
+  }
+
+  // 初始化
+  loadComments();
+</script>
+
+<style>
+  .comments-section {
+    margin-top: 3rem;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+  
+  .neo-card-header h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 0.05em;
+    font-size: 1.5rem;
+    margin: 0;
+    color: var(--neo-black);
+  }
+  
+  .comments-list {
+    margin-bottom: 1.5rem;
+  }
+  
+  .no-comments {
+    color: var(--neo-gray-700);
+    text-align: center;
+    padding: 2rem;
+    font-style: italic;
+  }
+  
+  .comment-item {
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border: 3px solid var(--neo-black);
+    box-shadow: 4px 4px 0 var(--neo-black);
+  }
+  
+  .comment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+  
+  .comment-author {
+    font-weight: 700;
+    color: var(--neo-black);
+    text-transform: uppercase;
+  }
+  
+  .comment-date {
+    font-size: 0.85rem;
+    color: var(--neo-gray-700);
+  }
+  
+  .comment-content {
+    color: var(--neo-black);
+    line-height: 1.6;
+    white-space: pre-wrap;
+  }
+  
+  .comment-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .neo-input {
+    width: 100%;
+    border: 4px solid var(--neo-black);
+    border-radius: var(--neo-radius);
+    padding: 0.9rem 1rem;
+    background-color: var(--neo-white);
+    font-size: 1rem;
+    font-family: inherit;
+    transition: border-color var(--neo-transition), box-shadow var(--neo-transition);
+  }
+  
+  .neo-input:focus {
+    outline: none;
+    border-color: var(--neo-primary-dark);
+    box-shadow: 6px 6px 0 var(--neo-black);
+  }
+  
+  .comment-textarea {
+    resize: vertical;
+    min-height: 100px;
+    font-family: inherit;
+  }
+  
+  .neo-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border: 4px solid var(--neo-black);
+    border-radius: var(--neo-radius);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: 0.85rem 1.5rem;
+    cursor: pointer;
+    box-shadow: var(--neo-shadow);
+    transition: transform var(--neo-transition), box-shadow var(--neo-transition), background-color var(--neo-transition);
+    font-size: 1rem;
+  }
+  
+  .neo-btn:hover:not(:disabled) {
+    transform: translate(-2px, -2px);
+    box-shadow: 10px 10px 0 var(--neo-black);
+  }
+</style>

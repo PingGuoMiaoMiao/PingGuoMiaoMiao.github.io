@@ -1,0 +1,120 @@
+---
+import PostLayout from "../../layouts/PostLayout.astro";
+import Comments from "../../components/Comments.astro";
+import { processPosts, getPostById, getAdjacentPosts } from "../../utils/posts";
+import { parseComponentReferences, replaceComponentReferences } from "../../utils/markdown";
+
+export async function getStaticPaths() {
+  // 获取所有文章
+  const allPostsRaw = await Astro.glob("../../content/posts/*.md");
+  const allPosts = processPosts(allPostsRaw);
+  
+  // 为每篇文章生成路径
+  return Promise.all(allPosts.map(async (post) => {
+    const { prev, next } = getAdjacentPosts(allPosts, post.id);
+    
+    // 找到对应的原始 Markdown 文件
+    const originalPost = allPostsRaw.find(p => {
+      const id = p.file.split('/').pop()?.replace('.md', '') || '';
+      return id === post.id;
+    });
+    
+    if (!originalPost) {
+      throw new Error(`找不到文章: ${post.id}`);
+    }
+    
+    // 解析组件引用
+    const componentRefs = parseComponentReferences(post.content);
+    const { content: processedContent } = replaceComponentReferences(
+      post.content,
+      componentRefs
+    );
+    
+    // 使用 marked 渲染 Markdown 为 HTML
+    const { marked } = await import('marked');
+    const renderedContent = marked.parse(processedContent, {
+      gfm: true,
+      breaks: true,
+    }) as string;
+    
+    return {
+      params: { id: post.id },
+      props: {
+        post,
+        prevPost: prev ? { id: prev.id, title: prev.frontmatter.title } : null,
+        nextPost: next ? { id: next.id, title: next.frontmatter.title } : null,
+        componentRefs,
+        processedContent: renderedContent,
+      },
+    };
+  }));
+}
+
+interface Props {
+  post: ReturnType<typeof processPosts>[0];
+  prevPost: { id: string; title: string } | null;
+  nextPost: { id: string; title: string } | null;
+  componentRefs: ReturnType<typeof parseComponentReferences>;
+  processedContent: string;
+}
+
+const { post, prevPost, nextPost, componentRefs, processedContent } = Astro.props;
+
+// 准备组件映射（用于在模板中渲染）
+const componentMap = new Map();
+for (const ref of componentRefs) {
+  try {
+    const ComponentModule = await import(`../../components/${ref.componentName}.astro`);
+    componentMap.set(ref, ComponentModule.default);
+  } catch (error) {
+    console.warn(`无法加载组件: ${ref.componentName}`, error);
+  }
+}
+---
+
+<PostLayout 
+  frontmatter={post.frontmatter} 
+  content={processedContent}
+  id={post.id}
+  prevPost={prevPost}
+  nextPost={nextPost}
+>
+  <div id="postContent" set:html={processedContent} />
+  
+  <!-- 动态组件渲染 -->
+  {Array.from(componentMap.entries()).map(([ref, Component]) => {
+    const placeholder = `<!-- COMPONENT_PLACEHOLDER_${componentRefs.indexOf(ref)} -->`;
+    return (
+      <Fragment>
+        <div data-placeholder={placeholder} style="display: none;"></div>
+        <Component startLine={ref.startLine} endLine={ref.endLine} />
+      </Fragment>
+    );
+  })}
+  
+  <Comments postId={post.id} />
+</PostLayout>
+
+<script define:vars={{ componentRefs, processedContent }}>
+  // 客户端处理组件占位符替换
+  document.addEventListener('DOMContentLoaded', () => {
+    const content = document.getElementById('postContent');
+    if (!content || componentRefs.length === 0) return;
+    
+    componentRefs.forEach((ref, index) => {
+      const placeholder = `<!-- COMPONENT_PLACEHOLDER_${index} -->`;
+      const placeholderEl = document.querySelector(`[data-placeholder="${placeholder}"]`);
+      
+      if (placeholderEl) {
+        const componentEl = placeholderEl.nextElementSibling;
+        if (componentEl && content.innerHTML.includes(placeholder)) {
+          content.innerHTML = content.innerHTML.replace(
+            placeholder,
+            componentEl.outerHTML
+          );
+          placeholderEl.remove();
+        }
+      }
+    });
+  });
+</script>

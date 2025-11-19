@@ -1,4 +1,6 @@
+
 ---
+
 // BackgroundCarousel.astro
 const slides = [
     {
@@ -13,25 +15,35 @@ const slides = [
         image: 'wallhaven-we7767_3440x1440.png',
         text: 'Third Slide',
     },
+    {
+        image: '小南娘图.jpg',
+        text: 'Fourth Slide',
+    },
 ];
 ---
 
 <div class="carousel">
-    {slides.map((slide, index) => (
-        <div class={`carousel-slide ${index === 0 ? 'active' : ''}`} style={`background-image: url("/${slide.image}");`}>
-            <div class="text">{slide.text}</div>
-        </div>
-    ))}
+    {slides.map((slide, index) => {
+        // 对中文文件名进行 URL 编码
+        const encodedImage = encodeURI(slide.image);
+        return (
+            <div class={`carousel-slide ${index === 0 ? 'active' : ''}`} style={`background-image: url("/${encodedImage}");`}>
+                <div class="text">{slide.text}</div>
+            </div>
+        );
+    })}
     <div class="backdrop-overlay"></div>
 </div>
 
 <style>
     .carousel {
         position: fixed;
+        top: 0;
+        left: 0;
         height: 100vh;
         width: 100%;
         overflow: hidden;
-        z-index: -2;
+        z-index: -1;
     }
 
     .carousel-slide {
@@ -44,7 +56,7 @@ const slides = [
         background-position: center;
         opacity: 0;
         transition: opacity 1s ease-in-out;
-        filter: brightness(0.85) saturate(1.05);
+        filter: brightness(0.9) saturate(1.1) blur(2px);
     }
 
     .carousel-slide.active {
@@ -61,20 +73,83 @@ const slides = [
         text-shadow: 0 4px 18px rgba(0, 0, 0, 0.55);
         letter-spacing: .25px;
     }
+    
+    .backdrop-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(248, 248, 248, 0.85);
+        pointer-events: none;
+        z-index: 0;
+    }
 </style>
 
-<script>
-    let currentSlide = 0;
-    const slides = document.querySelectorAll('.carousel-slide');
-    const totalSlides = slides.length;
+<script is:inline>
+    (function() {
+        let carouselInterval = null;
+        let currentSlide = 0;
 
-    const showSlide = (index: number) => {
-        slides[currentSlide].classList.remove('active');
-        currentSlide = (index + totalSlides) % totalSlides;
-        slides[currentSlide].classList.add('active');
-    };
+        function initCarousel() {
+            // 清除之前的定时器
+            if (carouselInterval !== null) {
+                clearInterval(carouselInterval);
+                carouselInterval = null;
+            }
 
-    const nextSlide = () => showSlide(currentSlide + 1);
+            const slides = document.querySelectorAll('.carousel-slide');
+            const totalSlides = slides.length;
 
-    setInterval(nextSlide, 5000); // Change slide every 5 seconds
+            if (totalSlides === 0) {
+                console.warn('No carousel slides found');
+                return;
+            }
+
+            console.log('Initializing carousel with', totalSlides, 'slides');
+
+            // 重置当前幻灯片索引
+            currentSlide = 0;
+            
+            // 确保第一个幻灯片是激活的
+            slides.forEach(function(slide, index) {
+                if (index === 0) {
+                    slide.classList.add('active');
+                } else {
+                    slide.classList.remove('active');
+                }
+            });
+
+            function showSlide(index) {
+                if (slides[currentSlide]) {
+                    slides[currentSlide].classList.remove('active');
+                }
+                currentSlide = (index + totalSlides) % totalSlides;
+                if (slides[currentSlide]) {
+                    slides[currentSlide].classList.add('active');
+                    console.log('Showing slide', currentSlide + 1, 'of', totalSlides);
+                }
+            }
+
+            function nextSlide() {
+                showSlide(currentSlide + 1);
+            }
+
+            // 每 5 秒切换一次
+            carouselInterval = setInterval(nextSlide, 5000);
+            console.log('Carousel interval started');
+        }
+
+        // 等待 DOM 加载完成
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initCarousel);
+        } else {
+            // DOM 已经加载完成，立即初始化
+            setTimeout(initCarousel, 100);
+        }
+
+        // 支持 Astro 的页面切换
+        document.addEventListener('astro:page-load', initCarousel);
+        document.addEventListener('astro:after-swap', initCarousel);
+    })();
 </script>

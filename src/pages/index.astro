@@ -1,36 +1,91 @@
 ---
 import { ViewTransitions } from 'astro:transitions';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import Greeting from '../components/Greeting';
-import Loading from '../components/Loading.astro';
-import { any } from 'astro/zod';
-import BackgroundCarousel from '../components/Background_Carousel.astro';
 import PostCard from '../components/PostCard.astro';
 import ProfileCard from '../components/ProfileCard.astro';
+import { processPosts } from '../utils/posts';
+
 const pageTitle = "苹果喵喵Blog";
-const posts = await Astro.glob('./posts/*.md');
+
+// 获取所有已发布的文章
+const allPostsRaw = await Astro.glob('./../content/posts/*.md');
+const posts = processPosts(allPostsRaw);
 ---
+
 <BaseLayout pageTitle={pageTitle}>
-  <section class="home-grid">
-    <aside class="left">
-      <ProfileCard />
-    </aside>
-    <div class="right">
-      <h3 class="section-title">最新文章</h3>
-      <div class="grid two-cols">
-        {posts.slice(0, 6).map((p: any) => (
-          <PostCard href={p.url} frontmatter={p.frontmatter} />
-        ))}
+  <section class="neo-page">
+    <div class="neo-card neo-brutalist neo-card-container">
+      <header class="neo-card-header">
+        <h3>Latest Posts</h3>
+        <p>Fresh drops from the community</p>
+      </header>
+      <div class="neo-card-body">
+        {posts.length > 0 ? (
+          <div class="neo-post-grid">
+            {posts.map((post) => (
+              <PostCard 
+                href={post.url} 
+                frontmatter={post.frontmatter} 
+              />
+            ))}
+          </div>
+        ) : (
+          <p class="neo-empty">No posts yet. Be the first to publish!</p>
+        )}
       </div>
     </div>
   </section>
   <ViewTransitions />
 </BaseLayout>
+
 <style>
-  .home-grid { display: grid; grid-template-columns: 280px 1fr; gap: 1rem; }
-  @media (max-width: 920px) { .home-grid { grid-template-columns: 1fr; } }
-  .section-title { margin: .25rem 0 .75rem; }
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1rem; }
-  .grid.two-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  @media (max-width: 920px) { .grid.two-cols { grid-template-columns: 1fr; } }
+  .neo-page {
+    min-height: 80vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 2rem 1rem 4rem;
+  }
+  
+  .neo-card-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    padding: 2rem;
+    width: 100%;
+    max-width: 960px;
+  }
+  
+  .neo-card-header h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 0.05em;
+    font-size: 2rem;
+    margin: 0;
+    color: var(--neo-black);
+  }
+  
+  .neo-card-header p {
+    margin: 0.25rem 0 0;
+    color: var(--neo-gray-700);
+    font-size: 0.95rem;
+  }
+  
+  .neo-post-grid {
+    display: grid;
+    gap: 1.25rem;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+  
+  .neo-empty {
+    text-align: center;
+    color: var(--neo-gray-700);
+    font-style: italic;
+    padding: 2rem;
+  }
+  
+  @media (max-width: 768px) {
+    .neo-post-grid {
+      grid-template-columns: 1fr;
+    }
+  }
 </style>

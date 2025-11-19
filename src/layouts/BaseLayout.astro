@@ -1,63 +1,43 @@
 ---
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
+import BackgroundCarousel from "../components/Background_Carousel.astro";
 import "../styles/global.css";
 import { ViewTransitions } from "astro:transitions";
-import BackgroundCarousel from '../components/Background_Carousel.astro';
-import ProgressBar from '../components/ProgressBar.astro';
-import BackToTop from '../components/BackToTop.astro';
-import SettingsPanel from '../components/SettingsPanel.astro';
-import SearchModal from '../components/SearchModal.astro';
+
 const { pageTitle } = Astro.props;
 ---
 
-<html lang="en">
+<html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <title>{pageTitle}</title>
-    <ViewTransitions /> 
+    <ViewTransitions />
+    <slot name="head" />
   </head>
   <body>
     <BackgroundCarousel />
     <Header />
-    <ProgressBar />
     <main class="container">
-      {pageTitle && (
-        <h1 transition:animate="slide" class="page-title gradientText">{pageTitle}</h1>
-      )}
       <slot />
     </main>
     <Footer />
-    <script type="module">
-      import "../scripts/menu.js";
-    </script>
-    <BackToTop />
-    <SearchModal />
-    <SettingsPanel />
   </body>
 </html>
+
 <style>
+  body {
+    position: relative;
+  }
+  
   .container {
-    width: min(var(--container-max), 92%);
+    width: min(960px, 92%);
     margin: 0 auto;
-    padding: 2rem 0 3rem;
+    padding: 2rem 1rem;
     position: relative;
     z-index: 1;
   }
-  .page-title {
-    font-size: clamp(2rem, 4vw, 3rem);
-    line-height: 1.2;
-    margin: 1rem 0 2rem;
-    font-weight: 800;
-    letter-spacing: 0.3px;
-    text-align: left;
-    text-shadow: 0 1px 0 rgba(0,0,0,.05);
-  }
 </style>
-  

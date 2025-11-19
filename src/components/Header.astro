@@ -1,27 +1,239 @@
 ---
-import Hamburger from './Hamburger.astro';
 import Navigation from './Navigation.astro';
-import ThemeIcon from './ThemeIcon.astro';
 ---
-<header class="site-header">
- <nav class="nav">
-   <div class="left">
-     <Hamburger />
-     <a class="brand gradientText" href="/">PingGuoMiaoMiao</a>
-   </div>
-   <div class="right">
-     <ThemeIcon />
-     <Navigation />
-   </div>
- </nav>
+
+<header class="neo-header">
+  <nav class="neo-nav-container">
+    <div class="neo-nav-brand">
+      <h1 class="logo-text">
+        <a href="/">
+          <span>Ping</span> Blog
+        </a>
+      </h1>
+    </div>
+    <Navigation />
+  </nav>
 </header>
+
 <style>
-  .site-header { position: sticky; top: 0; z-index: 10; backdrop-filter: saturate(180%) blur(10px); background: rgba(0,0,0,.25); border-bottom: 1px solid rgba(255,255,255,.08); }
-  .nav { display: flex; align-items: center; justify-content: space-between; width: min(1100px, 92%); margin: 0 auto; padding: .75rem 0; }
-  .left { display: flex; align-items: center; gap: .75rem; }
-  .right { display: flex; align-items: center; gap: .5rem; }
-  .brand { text-decoration: none; font-weight: 900; letter-spacing: .3px; font-size: clamp(1.5rem, 4vw, 2.25rem); }
-  .nav :global(.nav-links a) { padding: .35rem .8rem; border-radius: 999px; }
-  /* 让品牌文字的渐变更明显且动态 */
-  .brand.gradientText { background-size: 300% 100%; animation: backgroundScroll 8s linear infinite; }
+  @import url("https://fonts.googleapis.com/css2?family=Saira+Extra+Condensed:wght@800&family=Staatliches&display=swap");
+  
+  .neo-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    padding: 1rem;
+    background: transparent;
+  }
+  
+  .neo-nav-container {
+    border: 4px solid var(--neo-black);
+    box-shadow: var(--neo-shadow);
+    border-radius: var(--neo-radius);
+    background-color: var(--neo-black);
+    color: var(--neo-white);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+  
+  .neo-nav-brand {
+    display: flex;
+    align-items: center;
+    min-height: 2em;
+    padding: 0.25em 0;
+  }
+  
+  .logo-text {
+    font-family: "Saira Extra Condensed", sans-serif;
+    color: #86c7df;
+    font-size: clamp(1.2rem, 3vw, 1.8rem);
+    margin: 0;
+    padding: 0;
+    user-select: none;
+    text-transform: uppercase;
+    line-height: 1.2;
+    font-weight: 800;
+    display: inline-block;
+  }
+  
+  .logo-text a {
+    text-decoration: none;
+    color: inherit;
+    display: inline-block;
+    position: relative;
+  }
+  
+  .logo-text a span {
+    display: inline-block;
+    color: #ccecff;
+    position: relative;
+  }
+  
+  .logo-text a > span:not([style*="width"]) {
+    /* 非空格字符的样式 */
+  }
+  
+  .logo-text:hover {
+    cursor: pointer;
+  }
 </style>
+
+<script is:inline>
+  (function() {
+    // 动态加载 GSAP
+    async function loadGSAP() {
+      if (typeof gsap !== 'undefined') return Promise.resolve();
+      
+      return new Promise((resolve) => {
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js';
+        script.onload = resolve;
+        document.head.appendChild(script);
+      });
+    }
+    
+    // 初始化 Logo 动画
+    async function initLogoAnimation() {
+      await loadGSAP();
+      
+      const logoText = document.querySelector('.logo-text');
+      if (!logoText || typeof gsap === 'undefined') return;
+      
+      const link = logoText.querySelector('a');
+      if (!link) return;
+      
+      // 如果已经初始化过，跳过
+      if (link.dataset.animated === 'true') return;
+      link.dataset.animated = 'true';
+      
+      // 保存原始 HTML 结构
+      const originalHTML = link.innerHTML;
+      
+      // 分割文本为字符
+      function splitTextIntoChars(element) {
+        const chars = [];
+        
+        // 递归处理所有子节点
+        function processNode(node) {
+          if (node.nodeType === Node.TEXT_NODE) {
+            const text = node.textContent || '';
+            text.split('').forEach((char) => {
+              const wrapper = document.createElement('span');
+              wrapper.style.display = 'inline-block';
+              wrapper.style.overflow = 'hidden';
+              wrapper.style.verticalAlign = 'top';
+              wrapper.style.height = '1.2em';
+              wrapper.style.lineHeight = '1.2em';
+              
+              const charSpan = document.createElement('span');
+              charSpan.textContent = char === ' ' ? '\u00A0' : char;
+              charSpan.style.display = 'inline-block';
+              charSpan.style.verticalAlign = 'top';
+              if (char === ' ') {
+                charSpan.style.width = '0.3em';
+              }
+              
+              wrapper.appendChild(charSpan);
+              chars.push({ wrapper, charSpan });
+            });
+          } else if (node.nodeType === Node.ELEMENT_NODE) {
+            // 如果是 span 元素，应用特殊颜色
+            const isSpecialSpan = node.tagName === 'SPAN';
+            const text = node.textContent || '';
+            text.split('').forEach((char) => {
+              const wrapper = document.createElement('span');
+              wrapper.style.display = 'inline-block';
+              wrapper.style.overflow = 'hidden';
+              wrapper.style.verticalAlign = 'top';
+              wrapper.style.height = '1.2em';
+              wrapper.style.lineHeight = '1.2em';
+              
+              const charSpan = document.createElement('span');
+              charSpan.textContent = char === ' ' ? '\u00A0' : char;
+              charSpan.style.display = 'inline-block';
+              charSpan.style.verticalAlign = 'top';
+              if (isSpecialSpan) {
+                charSpan.style.color = '#ccecff'; // 应用 span 的颜色
+              }
+              if (char === ' ') {
+                charSpan.style.width = '0.3em';
+              }
+              
+              wrapper.appendChild(charSpan);
+              chars.push({ wrapper, charSpan });
+            });
+          }
+        }
+        
+        // 处理所有子节点
+        Array.from(link.childNodes).forEach(processNode);
+        
+        return chars;
+      }
+      
+      // 获取所有字符
+      const chars = splitTextIntoChars(link);
+      
+      if (chars.length === 0) {
+        return;
+      }
+      
+      // 清空并重新构建
+      link.innerHTML = '';
+      const charSpans = [];
+      chars.forEach(({ wrapper, charSpan }) => {
+        link.appendChild(wrapper);
+        charSpans.push(charSpan);
+      });
+      
+      // 初始状态：字符在下方
+      gsap.set(charSpans, { yPercent: 100 });
+      
+      // 创建动画时间线
+      const tl = gsap.timeline({ repeat: -1, repeatDelay: 2 });
+      
+      // 从中心向两边展开
+      tl.to(charSpans, {
+        yPercent: 0,
+        duration: 0.6,
+        ease: 'power2.out',
+        stagger: {
+          each: 0.05,
+          from: 'center'
+        }
+      })
+      // 从边缘向中心收起
+      .to(charSpans, {
+        yPercent: -100,
+        duration: 0.6,
+        ease: 'power2.in',
+        stagger: {
+          each: 0.05,
+          from: 'edges'
+        }
+      }, '+=1');
+    }
+    
+    // 等待 DOM 加载
+    function startAnimation() {
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initLogoAnimation);
+      } else {
+        setTimeout(initLogoAnimation, 100);
+      }
+    }
+    
+    startAnimation();
+    
+    // 支持 Astro 页面切换
+    document.addEventListener('astro:page-load', () => {
+      setTimeout(initLogoAnimation, 100);
+    });
+  })();
+</script>

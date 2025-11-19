@@ -1,36 +1,156 @@
 ---
-import BaseLayout from "../layouts/BaseLayout.astro";
-const posts = await Astro.glob('../pages/posts/*.md');
-// 假设 frontmatter.categories 为字符串或数组；无则归入 “未分类”
-const catMap: Record<string, typeof posts> = {};
-for (const p of posts) {
-  const cats = ([] as string[]).concat(p.frontmatter.categories || '未分类');
-  for (const c of cats) {
-    catMap[c] ||= [] as any;
-    catMap[c].push(p);
-  }
-}
-const pageTitle = "分类";
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PostCard from '../components/PostCard.astro';
+import { processPosts, getAllTags } from '../utils/posts';
+
+const pageTitle = "分类 | 苹果喵喵Blog";
+
+// 获取所有文章和标签
+const allPostsRaw = await Astro.glob('../content/posts/*.md');
+const allPosts = processPosts(allPostsRaw);
+const tags = getAllTags(allPosts);
+
+// 统计每个标签的文章数量
+const tagCounts = new Map<string, number>();
+allPosts.forEach((post) => {
+  const count = tagCounts.get(post.frontmatter.tag) || 0;
+  tagCounts.set(post.frontmatter.tag, count + 1);
+});
 ---
+
 <BaseLayout pageTitle={pageTitle}>
-  <section class="cats">
-    {Object.keys(catMap).sort().map((c) => (
-      <div class="cat-card">
-        <h3>{c}</h3>
-        <ul>
-          {catMap[c].map((p: any) => (
-            <li><a href={p.url}>{p.frontmatter.title}</a></li>
-          ))}
-        </ul>
+  <section class="neo-page">
+    <div class="neo-card neo-brutalist neo-card-container">
+      <header class="neo-card-header">
+        <h3>分类</h3>
+        <p>共 {tags.length} 个分类</p>
+      </header>
+      <div class="neo-card-body">
+        <div class="categories-grid">
+          {tags.map((tag) => {
+            const count = tagCounts.get(tag) || 0;
+            const posts = allPosts.filter((p) => p.frontmatter.tag === tag);
+            return (
+              <div class="category-card neo-brutalist">
+                <h3 class="category-title">
+                  <a href={`/tag/${encodeURIComponent(tag)}`}>{tag}</a>
+                </h3>
+                <p class="category-count">{count} 篇文章</p>
+                <div class="category-posts">
+                  {posts.slice(0, 3).map((post) => (
+                    <a href={post.url} class="category-post-link">
+                      {post.frontmatter.title}
+                    </a>
+                  ))}
+                </div>
+                {posts.length > 3 && (
+                  <a href={`/tag/${encodeURIComponent(tag)}`} class="category-more">
+                    查看全部 →
+                  </a>
+                )}
+              </div>
+            );
+          })}
+        </div>
       </div>
-    ))}
+    </div>
   </section>
 </BaseLayout>
+
 <style>
-  .cats { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; }
-  .cat-card { background: var(--surface); border-radius: var(--radius); padding: .9rem 1rem; box-shadow: inset 0 0 0 1px var(--border); }
-  ul { list-style: none; padding: 0; display: grid; gap: .35rem; margin-top: .5rem; }
-  a { text-decoration: none; color: #eaf2ff; }
+  .neo-page {
+    min-height: 80vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 2rem 1rem 4rem;
+  }
+  
+  .neo-card-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    padding: 2rem;
+    width: 100%;
+    max-width: 960px;
+  }
+  
+  .neo-card-header h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 0.05em;
+    font-size: 2rem;
+    margin: 0;
+    color: var(--neo-black);
+  }
+  
+  .neo-card-header p {
+    margin: 0.25rem 0 0;
+    color: var(--neo-gray-700);
+    font-size: 0.95rem;
+  }
+  
+  .categories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  .category-card {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .category-title {
+    margin: 0;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+  }
+  
+  .category-title a {
+    color: var(--neo-black);
+    text-decoration: none;
+  }
+  
+  .category-title a:hover {
+    color: var(--neo-primary-dark);
+  }
+  
+  .category-count {
+    margin: 0;
+    color: var(--neo-gray-700);
+    font-size: 0.9rem;
+  }
+  
+  .category-posts {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .category-post-link {
+    color: var(--neo-black);
+    text-decoration: none;
+    font-size: 0.9rem;
+    padding: 0.5rem;
+    border-radius: 4px;
+    transition: background-color var(--neo-transition);
+  }
+  
+  .category-post-link:hover {
+    background: var(--neo-gray-100);
+  }
+  
+  .category-more {
+    color: var(--neo-primary-dark);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+  }
+  
+  .category-more:hover {
+    text-decoration: underline;
+  }
 </style>
-
-

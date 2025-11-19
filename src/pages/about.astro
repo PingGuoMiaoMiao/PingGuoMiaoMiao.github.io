@@ -1,35 +1,223 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-const pageTitle = "关于我";
-const identity = {
-  firstName: "莎拉",
-  country: "加拿大",
-  occupation: "技术撰稿人",
-  hobbies: ["摄影", "观鸟", "棒球"],
-};
-const skills = ["HTML", "CSS", "JavaScript", "React", "Astro", "Writing Docs"];
+
+const pageTitle = "About Me | 苹果喵喵Blog";
 ---
 
 <BaseLayout pageTitle={pageTitle}>
-  <section class="about">
-    <article class="card">
-      <h2 class="gradientText">你好，我是{identity.firstName}</h2>
-      <p>来自{identity.country} 的 {identity.occupation}，热爱 {identity.hobbies.join("、")}。</p>
-      <p>这个站点用 Astro 构建，用来记录学习与生活点滴。</p>
-      <div class="skills">
-        {skills.map((s) => <span class="chip">{s}</span>)}
+  <section class="neo-page">
+    <div class="neo-card neo-brutalist neo-card-container">
+      <header class="neo-card-header">
+        <h3>About Me</h3>
+        <p>Get to know me better</p>
+      </header>
+      
+      <div class="neo-card-body">
+        <div class="about-content">
+          <div class="about-section">
+            <h4>👋 你好！</h4>
+            <p>
+              我是苹果喵喵，一个热爱编程和分享的开发者。这个博客记录了我的学习历程、技术心得和生活感悟。
+            </p>
+          </div>
+
+          <div class="about-section">
+            <h4>💻 技术栈</h4>
+            <div class="tech-tags">
+              <span class="neo-badge" style="background-color: var(--neo-primary); color: var(--neo-black);">JavaScript</span>
+              <span class="neo-badge" style="background-color: var(--neo-accent-cyan); color: var(--neo-white);">TypeScript</span>
+              <span class="neo-badge" style="background-color: var(--neo-accent-pink); color: var(--neo-white);">Astro</span>
+              <span class="neo-badge" style="background-color: var(--neo-success); color: var(--neo-white);">Vue</span>
+              <span class="neo-badge" style="background-color: var(--neo-primary); color: var(--neo-black);">React</span>
+              <span class="neo-badge" style="background-color: var(--neo-accent-cyan); color: var(--neo-white);">Node.js</span>
+            </div>
+          </div>
+
+          <div class="about-section">
+            <h4>📚 兴趣领域</h4>
+            <ul class="interest-list">
+              <li>前端开发与用户体验设计</li>
+              <li>全栈开发</li>
+              <li>开源项目贡献</li>
+              <li>技术写作与分享</li>
+            </ul>
+          </div>
+
+          <div class="about-section">
+            <h4>🔗 联系方式</h4>
+            <div class="contact-links">
+              <a href="https://github.com/PingGuoMiaoMiao" target="_blank" rel="noopener noreferrer" class="neo-btn" style="background-color: var(--neo-black); color: var(--neo-white);">
+                GitHub
+              </a>
+              <a href="mailto:your-email@example.com" class="neo-btn" style="background-color: var(--neo-primary); color: var(--neo-black);">
+                Email
+              </a>
+            </div>
+          </div>
+
+          <div class="about-section">
+            <h4>📝 关于这个博客</h4>
+            <p>
+              这个博客使用 <strong>Astro</strong> 构建，采用 <strong>Neo Brutalist</strong> 设计风格。
+              所有文章内容都存储在本地 Markdown 文件中，支持动态组件渲染。
+            </p>
+            <p>
+              如果你对这个博客的技术实现感兴趣，欢迎查看源代码或与我交流！
+            </p>
+          </div>
+        </div>
       </div>
-    </article>
+    </div>
   </section>
 </BaseLayout>
+
 <style>
-  .about { margin-top: .5rem; }
-  .card {
-    background: rgba(0,0,0,.25);
-    border-radius: 16px;
-    padding: 1rem 1.25rem 1.25rem;
-    box-shadow: 0 6px 20px rgba(0,0,0,.18), inset 0 0 0 1px rgba(255,255,255,.06);
+  .page-layout {
+    display: flex;
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
   }
-  .skills { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .75rem; }
-  .chip { padding: .3rem .6rem; background: rgba(255,255,255,.06); border-radius: 999px; font-size: .9rem; }
+  
+  .main-content {
+    flex: 1;
+  }
+  
+  .neo-card-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    padding: 2rem;
+    width: 100%;
+  }
+  
+  .neo-card-header h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 0.05em;
+    font-size: 2rem;
+    margin: 0;
+    color: var(--neo-black);
+  }
+  
+  .neo-card-header p {
+    margin: 0.25rem 0 0;
+    color: var(--neo-gray-700);
+    font-size: 0.95rem;
+  }
+  
+  .about-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+  
+  .about-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .about-section h4 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+    margin: 0;
+    color: var(--neo-black);
+  }
+  
+  .about-section p {
+    margin: 0;
+    line-height: 1.8;
+    color: var(--neo-black);
+  }
+  
+  .tech-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  
+  .neo-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    border: 2px solid var(--neo-black);
+    border-radius: var(--neo-radius);
+    box-shadow: 4px 4px 0 var(--neo-black);
+  }
+  
+  .interest-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .interest-list li {
+    padding-left: 1.5rem;
+    position: relative;
+    line-height: 1.8;
+    color: var(--neo-black);
+  }
+  
+  .interest-list li::before {
+    content: '▸';
+    position: absolute;
+    left: 0;
+    color: var(--neo-primary);
+    font-weight: bold;
+  }
+  
+  .contact-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  
+  .neo-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border: 4px solid var(--neo-black);
+    border-radius: var(--neo-radius);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: 0.85rem 1.5rem;
+    cursor: pointer;
+    box-shadow: var(--neo-shadow);
+    transition: transform var(--neo-transition), box-shadow var(--neo-transition), background-color var(--neo-transition);
+    text-decoration: none;
+    font-size: 0.9rem;
+  }
+  
+  .neo-btn:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 10px 10px 0 var(--neo-black);
+  }
+  
+  @media (max-width: 768px) {
+    .neo-card-container {
+      padding: 1.5rem;
+    }
+    
+    .about-content {
+      gap: 1.5rem;
+    }
+    
+    .contact-links {
+      flex-direction: column;
+    }
+    
+    .neo-btn {
+      width: 100%;
+      justify-content: center;
+    }
+  }
 </style>

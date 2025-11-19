@@ -1,48 +1,68 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import PostCard from '../components/PostCard.astro';
-import { processPosts } from '../utils/posts';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostCard from '../../components/PostCard.astro';
+import { processPosts, getPostsByTag, getAllTags } from '../../utils/posts';
 
-const pageTitle = "全部文章 | 苹果喵喵Blog";
+export async function getStaticPaths() {
+  // 获取所有文章
+  const allPostsRaw = await Astro.glob('../../content/posts/*.md');
+  const allPosts = processPosts(allPostsRaw);
+  
+  // 获取所有标签
+  const tags = getAllTags(allPosts);
+  
+  // 为每个标签生成路径
+  return tags.map((tag) => {
+    const posts = getPostsByTag(allPosts, tag);
+    // 只生成有文章的标签页
+    if (posts.length === 0) {
+      return null;
+    }
+    return {
+      params: { tag: encodeURIComponent(tag) },
+      props: { tag, posts },
+    };
+  }).filter(Boolean);
+}
 
-// 获取所有已发布的文章
-const allPostsRaw = await Astro.glob('./../content/posts/*.md');
-const posts = processPosts(allPostsRaw);
+interface Props {
+  tag: string;
+  posts: ReturnType<typeof processPosts>;
+}
+
+const { tag: decodedTag, posts } = Astro.props;
+const pageTitle = `标签: ${decodedTag} | 苹果喵喵Blog`;
 ---
 
 <BaseLayout pageTitle={pageTitle}>
   <section class="neo-page">
     <div class="neo-card neo-brutalist neo-card-container">
       <header class="neo-card-header">
-        <h3>全部文章</h3>
+        <h3>标签: {decodedTag}</h3>
         <p>共 {posts.length} 篇文章</p>
       </header>
       <div class="neo-card-body">
-        {posts.length > 0 ? (
-          <div class="posts-list">
-            {posts.map((post) => (
-              <article class="post-item neo-brutalist">
-                <header class="post-item-header">
-                  <h2 class="post-item-title">
-                    <a href={post.url}>{post.frontmatter.title}</a>
-                  </h2>
-                  <div class="post-item-meta">
-                    <time>{new Date(post.frontmatter.date).toLocaleDateString('zh-CN')}</time>
-                    <span> · </span>
-                    <a href={`/tag/${encodeURIComponent(post.frontmatter.tag)}`} class="post-item-tag">
-                      {post.frontmatter.tag}
-                    </a>
-                  </div>
-                </header>
-                {post.frontmatter.summary && (
-                  <p class="post-item-excerpt">{post.frontmatter.summary}</p>
-                )}
-              </article>
-            ))}
-          </div>
-        ) : (
-          <p class="neo-empty">暂无文章</p>
-        )}
+        <div class="posts-list">
+          {posts.map((post) => (
+            <article class="post-item neo-brutalist">
+              <header class="post-item-header">
+                <h2 class="post-item-title">
+                  <a href={post.url}>{post.frontmatter.title}</a>
+                </h2>
+                <div class="post-item-meta">
+                  <time>{new Date(post.frontmatter.date).toLocaleDateString('zh-CN')}</time>
+                  <span> · </span>
+                  <a href={`/tag/${encodeURIComponent(post.frontmatter.tag)}`} class="post-item-tag">
+                    {post.frontmatter.tag}
+                  </a>
+                </div>
+              </header>
+              {post.frontmatter.summary && (
+                <p class="post-item-excerpt">{post.frontmatter.summary}</p>
+              )}
+            </article>
+          ))}
+        </div>
       </div>
     </div>
   </section>
@@ -146,12 +166,5 @@ const posts = processPosts(allPostsRaw);
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
-  }
-  
-  .neo-empty {
-    text-align: center;
-    color: var(--neo-gray-700);
-    font-style: italic;
-    padding: 2rem;
   }
 </style>

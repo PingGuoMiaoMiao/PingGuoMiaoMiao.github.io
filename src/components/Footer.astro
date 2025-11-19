@@ -2,17 +2,46 @@
 import Social from './Social.astro';
 ---
 
-<footer class="site-footer">
-  <div class="inner">
-    <p> (๑¯ω¯๑) PingGuoMiaoMiao 的 <Social platform="github" username="PingGuoMiaoMiao" /></p>
+<footer class="neo-footer">
+  <div class="neo-footer-content">
+    <p>(๑¯ω¯๑) PingGuoMiaoMiao 的 <Social platform="github" username="PingGuoMiaoMiao" /></p>
     <small>© {new Date().getFullYear()} PingGuoMiaoMiao. 保留所有权利。</small>
   </div>
-  <div class="hairline" />
 </footer>
+
 <style>
-  .site-footer { margin-top: 2rem; position: relative; }
-  .inner { display: flex; flex-direction: column; align-items: center; gap: .25rem; }
-  .hairline { position: absolute; inset-inline: 0; top: -1px; height: 1px; background: linear-gradient(to right, transparent, rgba(255,255,255,.35), transparent); opacity: .5; }
-  .site-footer p, .site-footer small { color: #e5e7eb; opacity: .9; }
-  a { color: #9ad3ff; }
+  .neo-footer {
+    margin-top: 3rem;
+    padding: 2rem 1rem;
+    border-top: 4px solid var(--neo-black);
+    background: rgba(248, 248, 248, 0.95);
+    backdrop-filter: blur(10px);
+    position: relative;
+    z-index: 1;
+  }
+  
+  .neo-footer-content {
+    max-width: 960px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    text-align: center;
+  }
+  
+  .neo-footer p,
+  .neo-footer small {
+    color: var(--neo-black);
+    margin: 0;
+  }
+  
+  .neo-footer a {
+    color: var(--neo-black);
+    font-weight: 700;
+  }
+  
+  .neo-footer a:hover {
+    color: var(--neo-primary-dark);
+  }
 </style>

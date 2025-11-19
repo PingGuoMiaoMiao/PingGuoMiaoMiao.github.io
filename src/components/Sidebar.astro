@@ -1,0 +1,203 @@
+---
+const currentPath = Astro.url.pathname;
+
+const navItems = [
+  { label: '主页', href: '/', icon: '🏠' },
+  { label: '全部文章', href: '/blog', icon: '📝' },
+  { label: '标签', href: '/tags', icon: '🏷️' },
+  { label: '分类', href: '/categories', icon: '📂' },
+  { label: '关于', href: '/about', icon: '👤' },
+  { label: '订阅', href: '/rss.xml', icon: '📡' },
+];
+---
+
+<aside class="sidebar" id="sidebar">
+  <button class="sidebar-close" id="sidebarClose" aria-label="关闭侧边栏">✕</button>
+  
+  <nav class="sidebar-nav">
+    <ul class="sidebar-menu">
+      {navItems.map((item) => (
+        <li>
+          <a 
+            href={item.href} 
+            class={`sidebar-link ${currentPath === item.href || (item.href !== '/' && currentPath.startsWith(item.href)) ? 'active' : ''}`}
+          >
+            <span class="sidebar-icon">{item.icon}</span>
+            <span class="sidebar-label">{item.label}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+  
+  <div class="sidebar-search">
+    <button class="search-btn" id="searchBtn" aria-label="搜索">
+      <span>🔍</span>
+    </button>
+  </div>
+</aside>
+
+<style>
+  .sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 240px;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-right: 4px solid var(--neo-black);
+    box-shadow: var(--neo-shadow);
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem 0;
+    transition: transform var(--neo-transition);
+  }
+  
+  .sidebar-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 32px;
+    height: 32px;
+    border: 3px solid var(--neo-black);
+    border-radius: var(--neo-radius);
+    background: var(--neo-white);
+    color: var(--neo-black);
+    font-size: 1.2rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 4px 4px 0 var(--neo-black);
+    transition: transform var(--neo-transition), box-shadow var(--neo-transition);
+  }
+  
+  .sidebar-close:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 var(--neo-black);
+  }
+  
+  .sidebar-nav {
+    flex: 1;
+    padding: 2rem 0 1rem;
+    overflow-y: auto;
+  }
+  
+  .sidebar-menu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1.5rem;
+    color: var(--neo-black);
+    text-decoration: none;
+    font-weight: 600;
+    transition: background-color var(--neo-transition);
+    border-left: 3px solid transparent;
+  }
+  
+  .sidebar-link:hover {
+    background: var(--neo-gray-100);
+    border-left-color: var(--neo-primary);
+  }
+  
+  .sidebar-link.active {
+    background: var(--neo-gray-100);
+    border-left-color: var(--neo-primary);
+    color: var(--neo-primary-dark);
+  }
+  
+  .sidebar-icon {
+    font-size: 1.2rem;
+    width: 24px;
+    text-align: center;
+  }
+  
+  .sidebar-label {
+    font-size: 0.95rem;
+  }
+  
+  .sidebar-search {
+    padding: 1rem 1.5rem;
+    border-top: 2px solid var(--neo-gray-300);
+  }
+  
+  .search-btn {
+    width: 100%;
+    padding: 0.75rem;
+    border: 3px solid var(--neo-black);
+    border-radius: var(--neo-radius);
+    background: var(--neo-white);
+    color: var(--neo-black);
+    font-size: 1.2rem;
+    cursor: pointer;
+    box-shadow: 4px 4px 0 var(--neo-black);
+    transition: transform var(--neo-transition), box-shadow var(--neo-transition);
+  }
+  
+  .search-btn:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 var(--neo-black);
+  }
+  
+  @media (max-width: 1024px) {
+    .sidebar {
+      transform: translateX(-100%);
+    }
+    
+    .sidebar.open {
+      transform: translateX(0);
+    }
+  }
+</style>
+
+<script is:inline>
+  // 移动端侧边栏控制
+  const sidebar = document.getElementById('sidebar');
+  const sidebarClose = document.getElementById('sidebarClose');
+  const searchBtn = document.getElementById('searchBtn');
+  
+  if (sidebarClose) {
+    sidebarClose.addEventListener('click', () => {
+      if (sidebar) {
+        sidebar.classList.remove('open');
+      }
+    });
+  }
+  
+  // 搜索功能（连接到现有的搜索模态框）
+  if (searchBtn) {
+    searchBtn.addEventListener('click', () => {
+      const searchBtn = document.getElementById('openSearch');
+      if (searchBtn) {
+        searchBtn.click();
+      }
+      // 移动端关闭侧边栏
+      if (window.innerWidth <= 1024 && sidebar) {
+        sidebar.classList.remove('open');
+      }
+    });
+  }
+  
+  // 移动端菜单按钮
+  const menuBtn = document.getElementById('mobileMenuBtn');
+  if (menuBtn) {
+    menuBtn.addEventListener('click', () => {
+      if (sidebar) {
+        sidebar.classList.toggle('open');
+      }
+    });
+  }
+</script>
+

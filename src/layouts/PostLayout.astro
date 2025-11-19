@@ -1,0 +1,330 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import { parseComponentReferences } from "../utils/markdown";
+import type { PostFrontmatter } from "../utils/markdown";
+
+interface Props {
+  frontmatter: PostFrontmatter;
+  content: string;
+  id: string;
+  prevPost?: { id: string; title: string } | null;
+  nextPost?: { id: string; title: string } | null;
+}
+
+const { frontmatter, content, id, prevPost, nextPost } = Astro.props;
+
+// 解析组件引用
+const componentRefs = parseComponentReferences(content);
+
+// 生成 SEO 元数据
+const pageTitle = `${frontmatter.title} | 苹果喵喵Blog`;
+const description = frontmatter.summary || frontmatter.title;
+const coverImage = frontmatter.cover || "/favicon.svg";
+const siteUrl = Astro.site || "https://example.com";
+const pageUrl = `${siteUrl}/post/${id}`;
+---
+
+<BaseLayout pageTitle={pageTitle}>
+  <Fragment slot="head">
+    <!-- SEO -->
+    <meta name="description" content={description} />
+    <meta name="author" content="苹果喵喵" />
+    
+    <!-- Open Graph -->
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content={frontmatter.title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={coverImage.startsWith('http') ? coverImage : `${siteUrl}${coverImage}`} />
+    <meta property="og:url" content={pageUrl} />
+    <meta property="article:published_time" content={frontmatter.date} />
+    <meta property="article:tag" content={frontmatter.tag} />
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={frontmatter.title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={coverImage.startsWith('http') ? coverImage : `${siteUrl}${coverImage}`} />
+  </Fragment>
+
+  <section class="neo-page">
+    <article class="neo-card neo-brutalist neo-card-container">
+      <header class="neo-card-header">
+        <h3>{frontmatter.title}</h3>
+        <p>Article detail</p>
+      </header>
+      
+      <div class="neo-card-body">
+        <header class="post-header">
+          <span class="neo-badge" style="background-color: var(--neo-accent-pink); color: var(--neo-white);">
+            {frontmatter.tag}
+          </span>
+          <p class="meta">
+            {new Date(frontmatter.date).toLocaleDateString('zh-CN')}
+            <span> · </span>
+            {frontmatter.readingTime} 分钟阅读
+          </p>
+        </header>
+        
+        {frontmatter.cover && (
+          <img class="cover" src={frontmatter.cover} alt={frontmatter.title} loading="lazy" />
+        )}
+        
+        <div class="post-body">
+          <div class="markdown-body" id="postContent">
+            <slot />
+          </div>
+        </div>
+        
+        <!-- 上一篇/下一篇导航 -->
+        {(prevPost || nextPost) && (
+          <nav class="post-navigation">
+            {prevPost ? (
+              <a href={`/post/${prevPost.id}`} class="neo-btn" style="background-color: var(--neo-primary); color: var(--neo-black);">
+                ← 上一篇: {prevPost.title}
+              </a>
+            ) : (
+              <span></span>
+            )}
+            {nextPost ? (
+              <a href={`/post/${nextPost.id}`} class="neo-btn" style="background-color: var(--neo-primary); color: var(--neo-black);">
+                下一篇: {nextPost.title} →
+              </a>
+            ) : (
+              <span></span>
+            )}
+          </nav>
+        )}
+      </div>
+    </article>
+  </section>
+  
+  <script>
+    // 阅读统计（localStorage）
+    const postId = '{id}';
+    const viewKey = `post_view_${postId}`;
+    const views = parseInt(localStorage.getItem(viewKey) || '0', 10) + 1;
+    localStorage.setItem(viewKey, views.toString());
+    
+    // 目录生成
+    const slugify = (text: string) =>
+      text.toLowerCase()
+          .replace(/[^\w\u4e00-\u9fa5\s-]/g, '')
+          .trim()
+          .replace(/\s+/g, '-');
+
+    const buildTOC = () => {
+      const content = document.getElementById('postContent');
+      if (!content) return;
+      const headings = content.querySelectorAll('h1, h2, h3');
+      // 可以在这里添加目录功能
+    };
+
+    const enhanceCodeBlocks = () => {
+      const blocks = document.querySelectorAll('#postContent pre > code');
+      blocks.forEach((code) => {
+        const pre = code.parentElement;
+        if (!pre || pre.dataset.enhanced) return;
+        pre.dataset.enhanced = 'true';
+        pre.style.position = 'relative';
+        const btn = document.createElement('button');
+        btn.textContent = '复制';
+        btn.className = 'copy-btn neo-btn';
+        btn.style.cssText = 'position: absolute; top: 8px; right: 8px; font-size: 0.8rem; padding: 0.2rem 0.5rem; background-color: var(--neo-primary); color: var(--neo-black);';
+        btn.addEventListener('click', async () => {
+          try {
+            await navigator.clipboard.writeText(code.textContent || '');
+            btn.textContent = '已复制';
+            setTimeout(() => (btn.textContent = '复制'), 1200);
+          } catch {}
+        });
+        pre.appendChild(btn);
+      });
+    };
+
+    const bind = () => {
+      buildTOC();
+      enhanceCodeBlocks();
+    };
+    document.addEventListener('astro:page-load', bind);
+    document.addEventListener('astro:after-swap', bind);
+    if (document.readyState === 'complete') bind();
+  </script>
+</BaseLayout>
+
+<style>
+  .neo-page {
+    min-height: 80vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 2rem 1rem 4rem;
+  }
+  
+  .neo-card-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    padding: 2rem;
+    max-width: 900px;
+    width: 100%;
+  }
+  
+  .neo-card-header h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 0.05em;
+    font-size: 2rem;
+    margin: 0;
+    color: var(--neo-black);
+  }
+  
+  .neo-card-header p {
+    margin: 0.25rem 0 0;
+    color: var(--neo-gray-700);
+    font-size: 0.95rem;
+  }
+  
+  .post-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .neo-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.15rem 0.6rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    border: 2px solid var(--neo-black);
+    border-radius: var(--neo-radius);
+    box-shadow: 4px 4px 0 var(--neo-black);
+    align-self: flex-start;
+  }
+  
+  .meta {
+    margin: 0;
+    color: var(--neo-gray-700);
+    font-size: 0.95rem;
+  }
+  
+  .cover {
+    width: 100%;
+    max-height: 400px;
+    object-fit: cover;
+    border-radius: var(--neo-radius);
+    border: 3px solid var(--neo-black);
+    box-shadow: var(--neo-shadow);
+    margin: 1rem 0;
+  }
+  
+  .post-body {
+    line-height: 1.8;
+    font-size: 1rem;
+    margin: 1.5rem 0;
+  }
+  
+  .markdown-body :global(h2) {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    font-family: 'Bebas Neue', sans-serif;
+  }
+  
+  .markdown-body :global(h3) {
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    font-family: 'Bebas Neue', sans-serif;
+  }
+  
+  .markdown-body :global(p) {
+    margin: 0.75rem 0;
+    color: var(--neo-black);
+  }
+  
+  .markdown-body :global(ul), .markdown-body :global(ol) {
+    margin: 0.75rem 0;
+    padding-left: 1.5rem;
+  }
+  
+  .markdown-body :global(li) {
+    margin: 0.5rem 0;
+  }
+  
+  .markdown-body :global(code) {
+    font-family: 'Roboto Mono', monospace;
+    background: var(--neo-gray-100);
+    padding: 0.1rem 0.3rem;
+    border-radius: 4px;
+    border: 2px solid var(--neo-black);
+    font-size: 0.9em;
+  }
+  
+  .markdown-body :global(pre) {
+    background: var(--neo-gray-100);
+    border: 3px solid var(--neo-black);
+    padding: 1rem;
+    overflow-x: auto;
+    border-radius: var(--neo-radius);
+    box-shadow: var(--neo-shadow);
+  }
+  
+  .markdown-body :global(pre code) {
+    background: none;
+    border: none;
+    padding: 0;
+  }
+  
+  .markdown-body :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    border: 3px solid var(--neo-black);
+    box-shadow: var(--neo-shadow);
+  }
+  
+  .markdown-body :global(th),
+  .markdown-body :global(td) {
+    border: 2px solid var(--neo-black);
+    padding: 0.6rem;
+    text-align: left;
+  }
+  
+  .markdown-body :global(th) {
+    background: var(--neo-primary);
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  
+  .post-navigation {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 3px solid var(--neo-black);
+  }
+  
+  .neo-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border: 4px solid var(--neo-black);
+    border-radius: var(--neo-radius);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: 0.85rem 1.5rem;
+    cursor: pointer;
+    box-shadow: var(--neo-shadow);
+    transition: transform var(--neo-transition), box-shadow var(--neo-transition), background-color var(--neo-transition);
+    text-decoration: none;
+    font-size: 0.9rem;
+  }
+  
+  .neo-btn:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 10px 10px 0 var(--neo-black);
+  }
+</style>
