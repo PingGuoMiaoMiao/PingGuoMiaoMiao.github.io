@@ -2,7 +2,7 @@ import rss from '@astrojs/rss';
 import { processPosts } from '../utils/posts';
 
 export async function GET(context) {
-  const allPostsRaw = await import.meta.glob('../content/posts/*.md', { eager: true });
+  const allPostsRaw = import.meta.glob('../content/posts/*.md', { eager: true });
   const posts = processPosts(
     Object.entries(allPostsRaw).map(([path, module]) => {
       const post = module;

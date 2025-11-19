@@ -123,6 +123,97 @@ const searchPosts = allPostsRaw.map((p: any) => ({
     justify-content: flex-end; 
     margin-top: 1rem; 
   }
+  
+  @media (max-width: 768px) {
+    .open-search {
+      width: 45px;
+      height: 45px;
+      right: 12px;
+      bottom: 100px;
+      font-size: 1.1rem;
+      border-width: 3px;
+    }
+    
+    .modal {
+      width: 95vw;
+      margin: 5vh auto;
+      padding: 1.5rem;
+      border-width: 3px;
+    }
+    
+    input {
+      padding: 0.75rem 0.9rem;
+      font-size: 0.95rem;
+      border-width: 3px;
+    }
+    
+    .list {
+      max-height: 60vh;
+      gap: 0.6rem;
+    }
+    
+    .item {
+      padding: 0.75rem;
+      border-width: 2px;
+    }
+    
+    .item-title {
+      font-size: 1rem;
+    }
+    
+    .item-desc {
+      font-size: 0.85rem;
+    }
+    
+    .neo-btn {
+      padding: 0.75rem 1.25rem;
+      font-size: 0.9rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .open-search {
+      width: 40px;
+      height: 40px;
+      right: 10px;
+      bottom: 90px;
+      font-size: 1rem;
+      border-width: 3px;
+    }
+    
+    .modal {
+      width: 98vw;
+      margin: 2vh auto;
+      padding: 1rem;
+    }
+    
+    input {
+      padding: 0.65rem 0.8rem;
+      font-size: 0.9rem;
+    }
+    
+    .list {
+      max-height: 65vh;
+      gap: 0.5rem;
+    }
+    
+    .item {
+      padding: 0.6rem;
+    }
+    
+    .item-title {
+      font-size: 0.95rem;
+    }
+    
+    .item-desc {
+      font-size: 0.8rem;
+    }
+    
+    .neo-btn {
+      padding: 0.65rem 1rem;
+      font-size: 0.85rem;
+    }
+  }
 </style>
 
 <script is:inline>

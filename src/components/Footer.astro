@@ -44,4 +44,39 @@ import Social from './Social.astro';
   .neo-footer a:hover {
     color: var(--neo-primary-dark);
   }
+  
+  @media (max-width: 768px) {
+    .neo-footer {
+      padding: 1.5rem 0.75rem;
+      margin-top: 2rem;
+      border-width: 3px;
+    }
+    
+    .neo-footer-content {
+      gap: 0.4rem;
+    }
+    
+    .neo-footer p {
+      font-size: 0.9rem;
+    }
+    
+    .neo-footer small {
+      font-size: 0.8rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .neo-footer {
+      padding: 1rem 0.5rem;
+      margin-top: 1.5rem;
+    }
+    
+    .neo-footer p {
+      font-size: 0.85rem;
+    }
+    
+    .neo-footer small {
+      font-size: 0.75rem;
+    }
+  }
 </style>

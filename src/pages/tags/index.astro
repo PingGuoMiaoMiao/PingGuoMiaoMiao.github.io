@@ -152,4 +152,66 @@ allPosts.forEach((post) => {
   .tag-more:hover {
     text-decoration: underline;
   }
+  
+  @media (max-width: 768px) {
+    .neo-page {
+      padding: 1rem 0.5rem 2rem;
+    }
+    
+    .neo-card-container {
+      padding: 1.5rem;
+      gap: 1rem;
+    }
+    
+    .neo-card-header h3 {
+      font-size: 1.5rem;
+    }
+    
+    .tags-grid {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    
+    .tag-card {
+      padding: 1rem;
+      gap: 0.75rem;
+    }
+    
+    .tag-title {
+      font-size: 1.3rem;
+    }
+    
+    .tag-post-link {
+      font-size: 0.85rem;
+      padding: 0.4rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .neo-card-container {
+      padding: 1rem;
+      gap: 0.75rem;
+    }
+    
+    .neo-card-header h3 {
+      font-size: 1.25rem;
+    }
+    
+    .tag-card {
+      padding: 0.75rem;
+      gap: 0.5rem;
+    }
+    
+    .tag-title {
+      font-size: 1.1rem;
+    }
+    
+    .tag-count {
+      font-size: 0.85rem;
+    }
+    
+    .tag-post-link {
+      font-size: 0.8rem;
+    }
+  }
 </style>

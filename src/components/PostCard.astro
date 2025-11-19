@@ -103,4 +103,58 @@ const { href, frontmatter } = Astro.props;
     font-size: 0.9rem;
     margin-top: 0.5rem;
   }
+  
+  @media (max-width: 768px) {
+    .neo-post-card {
+      padding: 1rem;
+      gap: 0.75rem;
+    }
+    
+    .cover {
+      height: 160px;
+      border-width: 2px;
+    }
+    
+    .neo-post-card h3 {
+      font-size: 1.2rem;
+    }
+    
+    .desc {
+      font-size: 0.9rem;
+    }
+    
+    .meta {
+      font-size: 0.85rem;
+    }
+    
+    .neo-badge {
+      font-size: 0.75rem;
+      padding: 0.1rem 0.5rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .neo-post-card {
+      padding: 0.75rem;
+      gap: 0.5rem;
+    }
+    
+    .cover {
+      height: 140px;
+    }
+    
+    .neo-post-card h3 {
+      font-size: 1.1rem;
+    }
+    
+    .desc {
+      font-size: 0.85rem;
+      -webkit-line-clamp: 3;
+    }
+    
+    .meta {
+      font-size: 0.8rem;
+      flex-wrap: wrap;
+    }
+  }
 </style>

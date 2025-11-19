@@ -138,11 +138,68 @@ th {
 
 /* 响应式 */
 @media (max-width: 768px) {
-  .container {
-    padding: 1rem 0.5rem;
+  :root {
+    --neo-shadow: 4px 4px 0 var(--neo-black);
   }
   
-  h1 { font-size: 2rem; }
+  body {
+    font-size: 14px;
+  }
+  
+  .container {
+    padding: 1rem 0.75rem;
+    width: 100%;
+  }
+  
+  .neo-page {
+    padding: 1rem 0.5rem 2rem;
+  }
+  
+  h1 { font-size: 1.75rem; }
   h2 { font-size: 1.5rem; }
-  h3 { font-size: 1.2rem; }
+  h3 { font-size: 1.25rem; }
+  h4 { font-size: 1.1rem; }
+  
+  /* 表格在移动端横向滚动 */
+  table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* 代码块在移动端优化 */
+  pre {
+    padding: 0.75rem;
+    font-size: 0.85rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  code {
+    font-size: 0.85em;
+    padding: 0.1rem 0.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --neo-shadow: 3px 3px 0 var(--neo-black);
+  }
+  
+  body {
+    font-size: 13px;
+  }
+  
+  .container {
+    padding: 0.75rem 0.5rem;
+  }
+  
+  .neo-page {
+    padding: 0.75rem 0.25rem 1.5rem;
+  }
+  
+  h1 { font-size: 1.5rem; }
+  h2 { font-size: 1.25rem; }
+  h3 { font-size: 1.1rem; }
+  h4 { font-size: 1rem; }
 }
