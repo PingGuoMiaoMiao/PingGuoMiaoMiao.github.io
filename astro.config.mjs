@@ -1,6 +1,7 @@
 import { defineConfig } from "astro/config";
 import preact from "@astrojs/preact";
 import sitemap from "@astrojs/sitemap";
+import compress from "astro-compress";
 
 // https://astro.build/config
 export default defineConfig({
@@ -11,6 +12,16 @@ export default defineConfig({
       changefreq: 'weekly',
       priority: 0.7,
       lastmod: new Date(),
+    }),
+    compress({
+      css: true,
+      html: {
+        removeAttributeQuotes: false,
+        caseSensitive: true,
+      },
+      js: true,
+      img: false, // 图片压缩由构建工具处理，避免重复压缩
+      svg: true,
     }),
   ],
   markdown: {
@@ -23,5 +34,22 @@ export default defineConfig({
   i18n: {
     defaultLocale: 'zh-CN',
     locales: ['zh-CN'],
+  },
+  // 构建优化
+  build: {
+    inlineStylesheets: 'auto',
+    assets: '_assets',
+  },
+  // 压缩输出
+  vite: {
+    build: {
+      cssMinify: true,
+      minify: 'terser',
+      terserOptions: {
+        compress: {
+          drop_console: false, // 保留 console，方便调试
+        },
+      },
+    },
   },
 });

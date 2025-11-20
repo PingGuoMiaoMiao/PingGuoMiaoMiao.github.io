@@ -21,10 +21,11 @@ const posts = processPosts(allPostsRaw);
       <div class="neo-card-body">
         {posts.length > 0 ? (
           <div class="neo-post-grid">
-            {posts.map((post) => (
+            {posts.map((post, index) => (
               <PostCard 
                 href={post.url} 
-                frontmatter={post.frontmatter} 
+                frontmatter={post.frontmatter}
+                index={index}
               />
             ))}
           </div>

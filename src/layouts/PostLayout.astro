@@ -62,7 +62,16 @@ const pageUrl = `${siteUrl}/post/${id}`;
         </header>
         
         {frontmatter.cover && (
-          <img class="cover" src={frontmatter.cover} alt={frontmatter.title} loading="lazy" />
+          <img 
+            class="cover" 
+            src={frontmatter.cover} 
+            alt={frontmatter.title} 
+            loading="eager"
+            decoding="async"
+            fetchpriority="high"
+            width="960"
+            height="400"
+          />
         )}
         
         <div class="post-body">

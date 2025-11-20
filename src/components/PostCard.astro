@@ -4,14 +4,24 @@ import type { PostFrontmatter } from '../utils/markdown';
 interface Props {
   href: string;
   frontmatter: PostFrontmatter;
+  index?: number;
 }
 
-const { href, frontmatter } = Astro.props;
+const { href, frontmatter, index = 999 } = Astro.props;
 ---
 
 <article class="neo-post-card neo-brutalist">
   {frontmatter.cover && (
-    <img class="cover" src={frontmatter.cover} alt={frontmatter.title} loading="lazy" />
+    <img 
+      class="cover" 
+      src={frontmatter.cover} 
+      alt={frontmatter.title} 
+      loading="lazy" 
+      decoding="async"
+      fetchpriority={index === 0 ? "high" : "low"}
+      width="400"
+      height="180"
+    />
   )}
   <div class="content">
     <header>
@@ -36,11 +46,27 @@ const { href, frontmatter } = Astro.props;
     flex-direction: column;
     gap: 1rem;
     transition: transform var(--neo-transition), box-shadow var(--neo-transition);
+    /* 性能优化 */
+    contain: layout style paint;
+    will-change: transform;
   }
   
   .neo-post-card:hover {
     box-shadow: 6px 6px 0 var(--neo-black);
     transform: translate(2px, 2px);
+  }
+  
+  /* 移动端减少动画以提升性能 */
+  @media (max-width: 768px) {
+    .neo-post-card {
+      will-change: auto;
+    }
+    
+    @media (prefers-reduced-motion: reduce) {
+      .neo-post-card {
+        transition: none;
+      }
+    }
   }
   
   .cover {

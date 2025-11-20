@@ -26,8 +26,14 @@ const slides = [
     {slides.map((slide, index) => {
         // 对中文文件名进行 URL 编码
         const encodedImage = encodeURI(slide.image);
+        const isFirst = index === 0;
         return (
-            <div class={`carousel-slide ${index === 0 ? 'active' : ''}`} style={`background-image: url("/${encodedImage}");`}>
+            <div 
+                class={`carousel-slide ${isFirst ? 'active' : ''}`} 
+                data-slide-index={index}
+                style={isFirst ? `background-image: url("/${encodedImage}");` : undefined}
+                data-bg-image={!isFirst ? `/${encodedImage}` : undefined}
+            >
                 <div class="text">{slide.text}</div>
             </div>
         );
@@ -54,13 +60,32 @@ const slides = [
         width: 100%;
         background-size: cover;
         background-position: center;
+        background-repeat: no-repeat;
         opacity: 0;
         transition: opacity 1s ease-in-out;
         filter: brightness(0.9) saturate(1.1) blur(2px);
+        will-change: opacity;
+        transform: translateZ(0); /* 启用硬件加速 */
+        contain: layout style paint; /* CSS containment 优化 */
     }
 
     .carousel-slide.active {
         opacity: 1;
+    }
+    
+    /* 移动端优化：减少模糊效果以提升性能 */
+    @media (max-width: 768px) {
+        .carousel-slide {
+            filter: brightness(0.9) saturate(1.1);
+            transition: opacity 0.8s ease-in-out;
+        }
+    }
+    
+    /* 低性能设备优化 */
+    @media (prefers-reduced-motion: reduce) {
+        .carousel-slide {
+            transition: none;
+        }
     }
 
     .text {
@@ -91,6 +116,24 @@ const slides = [
         let carouselInterval = null;
         let currentSlide = 0;
 
+        // 延迟加载背景图片
+        function loadSlideBackground(slide) {
+            const bgImage = slide.getAttribute('data-bg-image');
+            if (bgImage && !slide.style.backgroundImage) {
+                // 使用 requestIdleCallback 在浏览器空闲时加载
+                if ('requestIdleCallback' in window) {
+                    requestIdleCallback(function() {
+                        slide.style.backgroundImage = 'url("' + bgImage + '")';
+                    }, { timeout: 2000 });
+                } else {
+                    // 降级方案：延迟加载
+                    setTimeout(function() {
+                        slide.style.backgroundImage = 'url("' + bgImage + '")';
+                    }, 1000);
+                }
+            }
+        }
+
         function initCarousel() {
             // 清除之前的定时器
             if (carouselInterval !== null) {
@@ -106,17 +149,19 @@ const slides = [
                 return;
             }
 
-            console.log('Initializing carousel with', totalSlides, 'slides');
-
             // 重置当前幻灯片索引
             currentSlide = 0;
             
-            // 确保第一个幻灯片是激活的
+            // 确保第一个幻灯片是激活的，并预加载下一张
             slides.forEach(function(slide, index) {
                 if (index === 0) {
                     slide.classList.add('active');
                 } else {
                     slide.classList.remove('active');
+                    // 预加载下一张图片
+                    if (index === 1) {
+                        loadSlideBackground(slide);
+                    }
                 }
             });
 
@@ -126,8 +171,15 @@ const slides = [
                 }
                 currentSlide = (index + totalSlides) % totalSlides;
                 if (slides[currentSlide]) {
+                    // 加载当前幻灯片背景（如果还没加载）
+                    loadSlideBackground(slides[currentSlide]);
                     slides[currentSlide].classList.add('active');
-                    console.log('Showing slide', currentSlide + 1, 'of', totalSlides);
+                    
+                    // 预加载下一张
+                    const nextIndex = (currentSlide + 1) % totalSlides;
+                    if (slides[nextIndex]) {
+                        loadSlideBackground(slides[nextIndex]);
+                    }
                 }
             }
 
@@ -135,9 +187,17 @@ const slides = [
                 showSlide(currentSlide + 1);
             }
 
-            // 每 5 秒切换一次
-            carouselInterval = setInterval(nextSlide, 5000);
-            console.log('Carousel interval started');
+            // 使用 requestIdleCallback 延迟启动轮播（如果支持）
+            function startCarousel() {
+                carouselInterval = setInterval(nextSlide, 5000);
+            }
+
+            if ('requestIdleCallback' in window) {
+                requestIdleCallback(startCarousel, { timeout: 3000 });
+            } else {
+                // 降级：延迟启动
+                setTimeout(startCarousel, 1000);
+            }
         }
 
         // 等待 DOM 加载完成

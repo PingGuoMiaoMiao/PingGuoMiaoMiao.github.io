@@ -18,5 +18,8 @@
     "marked": "^17.0.0",
     "preact": "^10.21.0",
     "typescript": "^5.4.5"
+  },
+  "devDependencies": {
+    "astro-compress": "^2.3.8"
   }
 }

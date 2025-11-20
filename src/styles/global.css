@@ -1,3 +1,4 @@
+/* 使用 font-display: swap 优化字体加载 */
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto+Mono:wght@400;500;700&display=swap');
 
 :root {
@@ -33,6 +34,9 @@ body {
   -moz-osx-font-smoothing: grayscale;
   min-height: 100vh;
   position: relative;
+  /* 性能优化 */
+  text-rendering: optimizeLegibility;
+  contain: layout style;
 }
 
 /* Neo Brutalist 基础样式 */
@@ -42,6 +46,9 @@ body {
   border-radius: var(--neo-radius);
   background-color: var(--neo-white);
   transition: transform var(--neo-transition), box-shadow var(--neo-transition);
+  /* 性能优化 */
+  contain: layout style paint;
+  will-change: transform;
 }
 
 .neo-brutalist:hover {
@@ -181,10 +188,20 @@ th {
   }
 }
 
-@media (max-width: 480px) {
-  :root {
-    --neo-shadow: 3px 3px 0 var(--neo-black);
-  }
+  @media (max-width: 480px) {
+    :root {
+      --neo-shadow: 3px 3px 0 var(--neo-black);
+      --neo-transition: 0.05s ease; /* 小屏幕进一步减少动画 */
+    }
+    
+    /* 低性能设备优化 */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
   
   body {
     font-size: 13px;

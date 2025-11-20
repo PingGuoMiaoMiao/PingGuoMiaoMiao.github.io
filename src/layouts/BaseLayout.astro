@@ -12,9 +12,18 @@ const { pageTitle } = Astro.props;
   <head>
     <meta charset="utf-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="generator" content={Astro.generator} />
     <title>{pageTitle}</title>
+    
+    <!-- 资源提示 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+    
+    <!-- 预加载关键资源 -->
+    <link rel="preload" href="/favicon.svg" as="image" type="image/svg+xml" />
+    
     <ViewTransitions />
     <slot name="head" />
   </head>
@@ -25,6 +34,53 @@ const { pageTitle } = Astro.props;
       <slot />
     </main>
     <Footer />
+    
+    <!-- 性能优化脚本 -->
+    <script>
+      // 使用 Intersection Observer 优化图片懒加载
+      if ('IntersectionObserver' in window) {
+        const imageObserver = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              const img = entry.target;
+              if (img.dataset.src) {
+                img.src = img.dataset.src;
+                img.removeAttribute('data-src');
+              }
+              imageObserver.unobserve(img);
+            }
+          });
+        }, { rootMargin: '50px' });
+
+        // 观察所有懒加载图片
+        document.querySelectorAll('img[loading="lazy"]').forEach((img) => {
+          imageObserver.observe(img);
+        });
+      }
+
+      // 使用 requestIdleCallback 延迟执行非关键任务
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(() => {
+          // 预取可能访问的链接
+          const links = Array.from(document.querySelectorAll('a[href^="/"]'))
+            .slice(0, 3)
+            .map(link => link.getAttribute('href'))
+            .filter(Boolean);
+          
+          links.forEach((href) => {
+            const link = document.createElement('link');
+            link.rel = 'prefetch';
+            link.href = href;
+            document.head.appendChild(link);
+          });
+        }, { timeout: 2000 });
+      }
+
+      // 移动端优化：减少动画
+      if (window.matchMedia('(max-width: 768px)').matches) {
+        document.documentElement.style.setProperty('--neo-transition', '0.1s ease');
+      }
+    </script>
   </body>
 </html>
 
