@@ -1,7 +1,7 @@
 ---
 // 获取所有文章用于搜索
 const allPostsRaw = await Astro.glob('../content/posts/*.md');
-const searchPosts = allPostsRaw.map((p: any) => ({
+const searchPostsData = allPostsRaw.map((p: any) => ({
   url: `/post/${p.file.split('/').pop()?.replace('.md', '')}`,
   title: p.frontmatter.title || '',
   desc: p.frontmatter.summary || p.frontmatter.description || '',
@@ -19,7 +19,7 @@ const searchPosts = allPostsRaw.map((p: any) => ({
     </div>
   </form>
   <script type="application/json" id="searchData" is:inline>
-    {JSON.stringify(searchPosts)}
+    {JSON.stringify(searchPostsData)}
   </script>
 </dialog>
 

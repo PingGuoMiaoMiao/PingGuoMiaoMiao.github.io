@@ -10,7 +10,7 @@ interface Props {
   nextPost?: { id: string; title: string } | null;
 }
 
-const { frontmatter, content, id, prevPost, nextPost } = Astro.props;
+const { frontmatter, content: _content, id, prevPost, nextPost } = Astro.props;
 
 // 生成 SEO 元数据
 const pageTitle = `${frontmatter.title} | 苹果喵喵Blog`;

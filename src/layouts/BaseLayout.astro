@@ -42,7 +42,7 @@ const { pageTitle } = Astro.props;
         const imageObserver = new IntersectionObserver((entries) => {
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
-              const img = entry.target;
+              const img = entry.target as HTMLImageElement;
               if (img.dataset.src) {
                 img.src = img.dataset.src;
                 img.removeAttribute('data-src');
@@ -65,7 +65,7 @@ const { pageTitle } = Astro.props;
           const links = Array.from(document.querySelectorAll('a[href^="/"]'))
             .slice(0, 3)
             .map(link => link.getAttribute('href'))
-            .filter(Boolean);
+            .filter((href): href is string => href !== null);
           
           links.forEach((href) => {
             const link = document.createElement('link');
