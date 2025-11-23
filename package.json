@@ -16,6 +16,8 @@
     "@astrojs/sitemap": "^3.2.0",
     "astro": "^4.10.1",
     "marked": "^17.0.0",
+    "pixi-live2d-display": "^0.4.0",
+    "pixi.js": "^7.4.3",
     "preact": "^10.21.0",
     "typescript": "^5.4.5"
   },

@@ -40,8 +40,8 @@ allPosts.forEach((post) => {
                     <a href={post.url} class="tag-post-link">
                       {post.frontmatter.title}
                     </a>
-                  ))}
-                </div>
+    ))}
+  </div>
                 {posts.length > 3 && (
                   <a href={`/tag/${encodeURIComponent(tag)}`} class="tag-more">
                     查看全部 →

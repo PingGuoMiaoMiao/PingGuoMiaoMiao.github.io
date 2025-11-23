@@ -46,7 +46,11 @@
       localStorage.setItem("theme", isDark ? "dark" : "light");
     }
   
-    document.getElementById("themeToggle")!.addEventListener("click", handleToggleClick);
+    const themeToggle = document.getElementById("themeToggle");
+    if (themeToggle) {
+      themeToggle.addEventListener("click", handleToggleClick);
+    }
+    // 如果元素不存在，静默返回（组件可能不在当前页面中）
   });
   document.addEventListener('astro:after-swap', () => {
     localStorage.theme === 'dark'
