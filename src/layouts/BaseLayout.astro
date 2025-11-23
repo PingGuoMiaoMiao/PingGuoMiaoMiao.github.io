@@ -1,7 +1,8 @@
 ---
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
-import BackgroundCarousel from "../components/Background_Carousel.astro";
+import BackgroundCarousel from "../components/BackgroundCarousel.astro";
+import Live2D from "../components/Live2D.astro";
 import "../styles/global.css";
 import { ViewTransitions } from "astro:transitions";
 
@@ -22,7 +23,7 @@ const { pageTitle } = Astro.props;
     <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
     
     <!-- 预加载关键资源 -->
-    <link rel="preload" href="/favicon.svg" as="image" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     
     <ViewTransitions />
     <slot name="head" />
@@ -34,6 +35,7 @@ const { pageTitle } = Astro.props;
       <slot />
     </main>
     <Footer />
+    <Live2D />
     
     <!-- 性能优化脚本 -->
     <script>
@@ -87,6 +89,7 @@ const { pageTitle } = Astro.props;
 <style>
   body {
     position: relative;
+    min-height: 100vh;  /* 确保 body 有足够高度，让 absolute 定位的 Live2D 可以跟随滚动 */
   }
   
   .container {

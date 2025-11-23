@@ -73,14 +73,28 @@
   };
 
   const bind = () => {
+    // 检查组件是否在页面中
+    const panel = document.getElementById('settingsPanel') as HTMLDivElement | null;
+    if (!panel) {
+      // 组件不在页面中，直接返回，不报错
+      return;
+    }
+    
     const settings = load();
     apply(settings);
-    const btn = document.getElementById('settingsBtn')!;
-    const panel = document.getElementById('settingsPanel')! as HTMLDivElement;
-    const sel = document.getElementById('accentSelect')! as HTMLSelectElement;
-    const rng = document.getElementById('radiusRange')! as HTMLInputElement;
-    const chk = document.getElementById('bgToggle')! as HTMLInputElement;
-    const close = document.getElementById('closeSettings')! as HTMLButtonElement;
+    const btn = document.getElementById('settingsBtn');
+    if (!btn) return;
+    
+    const sel = document.getElementById('accentSelect') as HTMLSelectElement | null;
+    const rng = document.getElementById('radiusRange') as HTMLInputElement | null;
+    const chk = document.getElementById('bgToggle') as HTMLInputElement | null;
+    const close = document.getElementById('closeSettings') as HTMLButtonElement | null;
+    
+    if (!sel || !rng || !chk || !close) {
+      // 元素未找到，静默返回
+      return;
+    }
+    
     sel.value = settings.gradient;
     rng.value = String(settings.radius);
     chk.checked = settings.hideCarousel;

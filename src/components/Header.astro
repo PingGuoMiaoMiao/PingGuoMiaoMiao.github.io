@@ -130,7 +130,8 @@ import Navigation from './Navigation.astro';
       
       return new Promise((resolve) => {
         const script = document.createElement('script');
-        script.src = 'https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js';
+        // 使用 unpkg CDN 作为备用
+        script.src = 'https://unpkg.com/gsap@3.12.5/dist/gsap.min.js';
         script.onload = resolve;
         document.head.appendChild(script);
       });

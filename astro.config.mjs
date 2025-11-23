@@ -42,6 +42,10 @@ export default defineConfig({
   },
   // 压缩输出
   vite: {
+    optimizeDeps: {
+      include: ['pixi.js', 'pixi-live2d-display'],
+      exclude: [],
+    },
     build: {
       cssMinify: true,
       minify: 'terser',
@@ -50,6 +54,9 @@ export default defineConfig({
           drop_console: false, // 保留 console，方便调试
         },
       },
+    },
+    ssr: {
+      noExternal: ['pixi-live2d-display'], // 确保这个包在 SSR 时也被处理
     },
   },
 });

@@ -101,7 +101,7 @@ pre {
 }
 
 pre code {
-  background: none;
+    background: none;
   border: none;
   padding: 0;
 }
@@ -113,7 +113,7 @@ table {
   margin: 1rem 0;
   border: 3px solid var(--neo-black);
   box-shadow: var(--neo-shadow);
-}
+  }
 
 th, td {
   border: 2px solid var(--neo-black);
@@ -145,7 +145,7 @@ th {
 
 /* 响应式 */
 @media (max-width: 768px) {
-  :root {
+:root {  
     --neo-shadow: 4px 4px 0 var(--neo-black);
   }
   
@@ -186,14 +186,14 @@ th {
     font-size: 0.85em;
     padding: 0.1rem 0.25rem;
   }
-}
+}  
 
   @media (max-width: 480px) {
     :root {
       --neo-shadow: 3px 3px 0 var(--neo-black);
       --neo-transition: 0.05s ease; /* 小屏幕进一步减少动画 */
-    }
-    
+}
+
     /* 低性能设备优化 */
     @media (prefers-reduced-motion: reduce) {
       * {
@@ -213,8 +213,8 @@ th {
   
   .neo-page {
     padding: 0.75rem 0.25rem 1.5rem;
-  }
-  
+}
+
   h1 { font-size: 1.5rem; }
   h2 { font-size: 1.25rem; }
   h3 { font-size: 1.1rem; }

@@ -1,0 +1,310 @@
+---
+// Live2D 组件
+// 使用 pixi-live2d-display 加载和显示 Live2D 模型
+// 注意：L2Dwidget 只支持 Cubism 2 格式，我们的模型是 Cubism 3/4 格式，所以使用 pixi-live2d-display
+---
+
+<div id="live2d-container" class="live2d-container">
+  <canvas id="live2d-canvas"></canvas>
+  <div class="live2d-controls">
+    <button id="live2d-toggle" class="live2d-toggle" aria-label="切换显示">👁️</button>
+  </div>
+  <div id="live2d-motion-panel" class="live2d-motion-panel">
+    <div class="motion-panel-header">动作测试</div>
+    <div class="motion-buttons">
+      <button class="motion-btn" data-motion="1">1</button>
+      <button class="motion-btn" data-motion="2">2</button>
+      <button class="motion-btn" data-motion="3">3</button>
+      <button class="motion-btn" data-motion="4">4</button>
+      <button class="motion-btn" data-motion="5">5</button>
+      <button class="motion-btn" data-motion="6">6</button>
+      <button class="motion-btn" data-motion="7">7</button>
+      <button class="motion-btn" data-motion="8">8</button>
+      <button class="motion-btn" data-motion="9">9</button>
+      <button class="motion-btn" data-motion="10">10</button>
+    </div>
+  </div>
+</div>
+
+<style>
+  .live2d-container {
+    position: fixed;
+    top: 150px;
+    right: 20px;
+    width: clamp(150px, 30vw, 400px);
+    height: clamp(200px, 40vw, 533px);
+    z-index: 99999;
+    transition: opacity 0.3s ease, width 0.3s ease, height 0.3s ease;
+    pointer-events: none;
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    isolation: isolate;
+  }
+
+  .live2d-container.hidden {
+    opacity: 0;
+    transform: translateY(20px);
+    pointer-events: none;
+  }
+
+  #live2d-canvas {
+    width: 100%;
+    height: 100%;
+    pointer-events: auto !important;
+    cursor: pointer;
+    position: relative;
+    z-index: 10;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    background: transparent;
+    display: block !important;
+    visibility: visible !important;
+  }
+
+  .live2d-controls {
+    position: absolute;
+    top: -40px;
+    right: 0;
+    display: flex;
+    gap: 8px;
+    z-index: 10001;
+    pointer-events: auto;
+  }
+
+  .live2d-toggle {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 3px solid var(--neo-black, #000);
+    background: var(--neo-white, #fff);
+    color: var(--neo-black, #000);
+    cursor: pointer;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 4px 4px 0 var(--neo-black, #000);
+    transition: transform var(--neo-transition, 0.2s), box-shadow var(--neo-transition, 0.2s);
+    pointer-events: auto;
+  }
+
+  .live2d-toggle:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 var(--neo-black, #000);
+  }
+
+  .live2d-motion-panel {
+    position: fixed;
+    right: 20px;
+    top: 200px;
+    width: 100px;
+    min-width: 100px;
+    background: var(--neo-white, #fff) !important;
+    border: 3px solid var(--neo-black, #000) !important;
+    box-shadow: 4px 4px 0 var(--neo-black, #000) !important;
+    padding: 12px;
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+    pointer-events: auto !important;
+    z-index: 100000 !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    isolation: isolate;
+    transform: translateZ(0);
+  }
+
+  .live2d-motion-panel.visible {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+
+  .motion-panel-header {
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-align: center;
+    color: var(--neo-black, #000);
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--neo-black, #000);
+  }
+
+  .motion-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+  }
+
+  .motion-btn {
+    width: 100%;
+    height: 32px;
+    border: 2px solid var(--neo-black, #000);
+    background: var(--neo-white, #fff);
+    color: var(--neo-black, #000);
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 2px 2px 0 var(--neo-black, #000);
+    transition: transform var(--neo-transition, 0.2s), box-shadow var(--neo-transition, 0.2s);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .motion-btn:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 3px 3px 0 var(--neo-black, #000);
+  }
+
+  .motion-btn:active {
+    transform: translate(1px, 1px);
+    box-shadow: 1px 1px 0 var(--neo-black, #000);
+  }
+
+  .motion-btn.playing {
+    background: var(--neo-black, #000);
+    color: var(--neo-white, #fff);
+  }
+
+  /* 响应式设计 */
+  @media (min-width: 1441px) {
+    .live2d-container {
+      width: clamp(400px, 28vw, 500px);
+      height: clamp(533px, 37.33vw, 667px);
+      right: 25px;
+    }
+  }
+
+  @media (max-width: 1440px) and (min-width: 1025px) {
+    .live2d-container {
+      width: clamp(350px, 28vw, 400px);
+      height: clamp(467px, 37.33vw, 533px);
+      right: 20px;
+    }
+  }
+
+  @media (max-width: 1024px) and (min-width: 769px) {
+    .live2d-container {
+      width: clamp(280px, 32vw, 350px);
+      height: clamp(373px, 42.67vw, 467px);
+      top: 130px;
+      right: 15px;
+    }
+  }
+
+  @media (max-width: 768px) and (min-width: 601px) {
+    .live2d-container {
+      width: clamp(220px, 35vw, 280px);
+      height: clamp(293px, 46.67vw, 373px);
+      top: 120px;
+      right: 12px;
+    }
+    
+    .live2d-motion-panel {
+      left: -100px;
+      width: 85px;
+      padding: 10px;
+    }
+    
+    .motion-btn {
+      height: 28px;
+      font-size: 0.85rem;
+    }
+  }
+
+  @media (max-width: 600px) and (min-width: 481px) {
+    .live2d-container {
+      width: clamp(180px, 38vw, 220px);
+      height: clamp(240px, 50.67vw, 293px);
+      top: 80px;
+      right: 8px;
+    }
+    
+    .live2d-motion-panel {
+      left: -90px;
+      width: 75px;
+      padding: 8px;
+    }
+    
+    .motion-btn {
+      height: 26px;
+      font-size: 0.8rem;
+    }
+  }
+
+  @media (max-width: 480px) and (min-width: 361px) {
+    .live2d-container {
+      width: clamp(150px, 40vw, 180px);
+      height: clamp(200px, 53.33vw, 240px);
+      top: 60px;
+      right: 5px;
+    }
+  }
+
+  @media (max-width: 360px) {
+    .live2d-container {
+      width: clamp(120px, 42vw, 150px);
+      height: clamp(160px, 56vw, 200px);
+      top: 50px;
+      right: 3px;
+    }
+  }
+
+  @media (max-width: 280px) {
+    .live2d-container {
+      width: clamp(100px, 45vw, 120px);
+      height: clamp(133px, 60vw, 160px);
+      top: 40px;
+      right: 2px;
+    }
+  }
+</style>
+
+<script>
+  // Live2D 初始化逻辑
+  // 导入客户端初始化脚本，让 Vite 处理模块解析
+  import { initLive2D } from '../utils/live2d-client';
+  
+  // 初始化函数
+  const initializeLive2D = () => {
+    // 检查容器是否存在
+    const container = document.getElementById('live2d-container');
+    if (!container) {
+      console.warn('Live2D 容器未找到，等待 DOM 加载...');
+      return;
+    }
+    
+    // 确保容器可见
+    container.style.display = 'block';
+    container.style.visibility = 'visible';
+    container.style.opacity = '1';
+    container.classList.remove('hidden');
+    
+    // 初始化 Live2D
+    initLive2D();
+  };
+  
+  // 页面加载时初始化
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeLive2D);
+  } else {
+    initializeLive2D();
+  }
+  
+  // 监听 Astro 页面切换事件（ViewTransitions）
+  document.addEventListener('astro:page-load', initializeLive2D);
+  document.addEventListener('astro:after-swap', initializeLive2D);
+  
+  // 也监听 before-swap，确保容器在切换时保持可见
+  document.addEventListener('astro:before-swap', () => {
+    const container = document.getElementById('live2d-container');
+    if (container) {
+      // 在页面切换前确保容器可见
+      container.style.display = 'block';
+      container.style.visibility = 'visible';
+      container.style.opacity = '1';
+    }
+  });
+</script>
