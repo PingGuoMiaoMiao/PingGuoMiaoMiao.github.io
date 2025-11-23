@@ -118,6 +118,10 @@ export async function initLive2D(): Promise<void> {
       }
 
       // 6. 获取容器尺寸
+      if (!container) {
+        console.error('容器元素不存在');
+        return;
+      }
       const rect = container.getBoundingClientRect();
       const defaultWidth = 600;
       const defaultHeight = 800;
@@ -196,11 +200,13 @@ export async function initLive2D(): Promise<void> {
       console.log(`✅ Live2D 模型加载成功！耗时: ${modelLoadTime.toFixed(2)}ms`);
 
       // 确保容器可见
-      container.style.display = 'block';
-      container.style.opacity = '1';
-      container.style.visibility = 'visible';
-      container.classList.remove('hidden');
-      console.log('✅ 容器已设置为可见');
+      if (container) {
+        container.style.display = 'block';
+        container.style.opacity = '1';
+        container.style.visibility = 'visible';
+        container.classList.remove('hidden');
+        console.log('✅ 容器已设置为可见');
+      }
 
       // 11. 添加模型到 stage
       app.stage.addChild(model);
@@ -247,20 +253,24 @@ export async function initLive2D(): Promise<void> {
       }
       
       // 13. 添加眼睛跟随鼠标功能
-      initEyeTracking(model, app, canvas, container);
+      if (canvas && container) {
+        initEyeTracking(model, app, canvas, container);
+      }
 
       // 14. 添加点击交互
-      canvas.addEventListener('click', (e) => {
-        if (!model) return;
-        try {
-          const motionGroups = ['Idle', 'TapBody', 'Tap'];
-          const randomGroup = motionGroups[Math.floor(Math.random() * motionGroups.length)];
-          model.motion(randomGroup, 0);
-          console.log('✅ 播放动画:', randomGroup);
-        } catch (motionError) {
-          console.log('动画播放失败，可能模型没有该动作组', motionError);
-        }
-      });
+      if (canvas) {
+        canvas.addEventListener('click', () => {
+          if (!model) return;
+          try {
+            const motionGroups = ['Idle', 'TapBody', 'Tap'];
+            const randomGroup = motionGroups[Math.floor(Math.random() * motionGroups.length)];
+            model.motion(randomGroup, 0);
+            console.log('✅ 播放动画:', randomGroup);
+          } catch (motionError) {
+            console.log('动画播放失败，可能模型没有该动作组', motionError);
+          }
+        });
+      }
 
       // 15. 处理窗口大小变化
       const resizeObserver = new ResizeObserver(() => {
@@ -273,7 +283,9 @@ export async function initLive2D(): Promise<void> {
           }
         }
       });
-      resizeObserver.observe(container);
+      if (container) {
+        resizeObserver.observe(container);
+      }
 
       // 16. 处理滚动（保持位置）
       function updatePosition() {
