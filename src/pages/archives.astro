@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-const posts = await Astro.glob('../pages/posts/*.md');
+// 从 content/posts 目录加载文章
+const posts = await Astro.glob('../content/posts/*.md');
 // 按日期倒序
 posts.sort((a: any, b: any) => new Date(b.frontmatter.pubDate).getTime() - new Date(a.frontmatter.pubDate).getTime());
 // 分组到 年 -> 月 -> 列表

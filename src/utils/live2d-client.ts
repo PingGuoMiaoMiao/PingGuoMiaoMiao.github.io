@@ -45,7 +45,8 @@ export async function initLive2D() {
   
   const updatePosition = () => {
     // 获取当前滚动位置（兼容不同浏览器）
-    targetScrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+        // 使用 scrollY，如果不可用则使用 scrollTop
+        targetScrollY = window.scrollY ?? document.documentElement.scrollTop ?? document.body.scrollTop ?? 0;
     
     // 使用平滑插值，避免突然跳跃
     const diff = targetScrollY - currentScrollY;
