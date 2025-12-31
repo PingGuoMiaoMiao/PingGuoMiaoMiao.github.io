@@ -1,0 +1,92 @@
+<mxfile host="app.diagrams.net" modified="2024-01-01T00:00:00.000Z" agent="draw.io" version="21.0.0" etag="drawio" type="device">
+  <diagram id="图4-2-1-Markdown文件处理流程图" name="图4-2-1-Markdown文件处理流程图">
+    <mxGraphModel dx="1422" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        
+        <!-- 开始节点 -->
+        <mxCell id="start" value="开始" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=14" vertex="1" parent="1">
+          <mxGeometry x="340" y="40" width="120" height="60" as="geometry" />
+        </mxCell>
+        
+        <!-- Markdown 文件 -->
+        <mxCell id="step1" value="Markdown 文件" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="320" y="140" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="note1" value="存储在 src/content/posts/&#xa;格式: 1.md, 2.md, ..." style="text;html=1;strokeColor=#FFD700;fillColor=#FFF9E6;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=11;fontColor=#333333" vertex="1" parent="1">
+          <mxGeometry x="540" y="145" width="160" height="50" as="geometry" />
+        </mxCell>
+        
+        <!-- Astro.glob() 读取 -->
+        <mxCell id="step2" value="Astro.glob() 读取" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="320" y="240" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="note2" value="Astro.glob('../../content/posts/*.md')&#xa;返回文件集合" style="text;html=1;strokeColor=#FFD700;fillColor=#FFF9E6;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=11;fontColor=#333333" vertex="1" parent="1">
+          <mxGeometry x="540" y="245" width="200" height="50" as="geometry" />
+        </mxCell>
+        
+        <!-- processPosts() 处理 -->
+        <mxCell id="step3" value="processPosts() 处理" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="320" y="340" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="note3" value="解析 frontmatter&#xa;提取元数据&#xa;提取正文内容" style="text;html=1;strokeColor=#FFD700;fillColor=#FFF9E6;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=11;fontColor=#333333" vertex="1" parent="1">
+          <mxGeometry x="540" y="340" width="160" height="60" as="geometry" />
+        </mxCell>
+        
+        <!-- 过滤已发布文章 -->
+        <mxCell id="step4" value="过滤已发布文章" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="320" y="440" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="note4" value="status === 'published'&#xa;过滤掉草稿文章" style="text;html=1;strokeColor=#FFD700;fillColor=#FFF9E6;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=11;fontColor=#333333" vertex="1" parent="1">
+          <mxGeometry x="540" y="445" width="160" height="50" as="geometry" />
+        </mxCell>
+        
+        <!-- 按日期排序 -->
+        <mxCell id="step5" value="按日期排序" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="320" y="540" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="note5" value="按 date 字段&#xa;降序排列&#xa;(最新在前)" style="text;html=1;strokeColor=#FFD700;fillColor=#FFF9E6;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=11;fontColor=#333333" vertex="1" parent="1">
+          <mxGeometry x="540" y="540" width="160" height="60" as="geometry" />
+        </mxCell>
+        
+        <!-- 生成路由和页面 -->
+        <mxCell id="step6" value="生成路由和页面" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=14;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="320" y="640" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="note6" value="构建时生成静态HTML&#xa;路由: /post/{id}" style="text;html=1;strokeColor=#FFD700;fillColor=#FFF9E6;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=11;fontColor=#333333" vertex="1" parent="1">
+          <mxGeometry x="540" y="645" width="160" height="50" as="geometry" />
+        </mxCell>
+        
+        <!-- 结束节点 -->
+        <mxCell id="end" value="结束" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;fontSize=14" vertex="1" parent="1">
+          <mxGeometry x="340" y="740" width="120" height="60" as="geometry" />
+        </mxCell>
+        
+        <!-- 连接线 -->
+        <mxCell id="arrow1" value="" style="endArrow=classic;html=1;rounded=0;strokeWidth=2;strokeColor=#4A90E2" edge="1" parent="1" source="start" target="step1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow2" value="" style="endArrow=classic;html=1;rounded=0;strokeWidth=2;strokeColor=#4A90E2" edge="1" parent="1" source="step1" target="step2">
+          <mxGeometry width="50" height="50" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow3" value="" style="endArrow=classic;html=1;rounded=0;strokeWidth=2;strokeColor=#4A90E2" edge="1" parent="1" source="step2" target="step3">
+          <mxGeometry width="50" height="50" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow4" value="" style="endArrow=classic;html=1;rounded=0;strokeWidth=2;strokeColor=#4A90E2" edge="1" parent="1" source="step3" target="step4">
+          <mxGeometry width="50" height="50" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow5" value="" style="endArrow=classic;html=1;rounded=0;strokeWidth=2;strokeColor=#4A90E2" edge="1" parent="1" source="step4" target="step5">
+          <mxGeometry width="50" height="50" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow6" value="" style="endArrow=classic;html=1;rounded=0;strokeWidth=2;strokeColor=#4A90E2" edge="1" parent="1" source="step5" target="step6">
+          <mxGeometry width="50" height="50" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow7" value="" style="endArrow=classic;html=1;rounded=0;strokeWidth=2;strokeColor=#4A90E2" edge="1" parent="1" source="step6" target="end">
+          <mxGeometry width="50" height="50" relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
+

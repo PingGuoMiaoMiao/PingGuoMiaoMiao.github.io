@@ -1,0 +1,42 @@
+@startuml 图4-2-1-Markdown文件处理流程图
+!theme plain
+skinparam activity {
+    BackgroundColor #E8F4F8
+    BorderColor #4A90E2
+    FontSize 14
+    FontStyle bold
+}
+skinparam arrow {
+    Color #4A90E2
+    Thickness 2
+}
+skinparam note {
+    BackgroundColor #FFF9E6
+    BorderColor #FFD700
+    FontSize 12
+}
+
+start
+
+:Markdown 文件;
+note right: 存储在 src/content/posts/\n格式: 1.md, 2.md, ...
+
+:Astro.glob() 读取;
+note right: Astro.glob('../../content/posts/*.md')\n返回文件集合
+
+:processPosts() 处理;
+note right: 解析 frontmatter\n提取元数据\n提取正文内容
+
+:过滤已发布文章;
+note right: status === 'published'\n过滤掉草稿文章
+
+:按日期排序;
+note right: 按 date 字段\n降序排列\n(最新在前)
+
+:生成路由和页面;
+note right: 构建时生成静态HTML\n路由: /post/{id}
+
+stop
+
+@enduml
+
