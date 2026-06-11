@@ -7,6 +7,8 @@ export default defineConfig({
   site: "https://example.com", // 请替换为你的实际域名
   integrations: [
     preact(),
+    // TODO: Re-enable @astrojs/sitemap after upstream build crash is fixed.
+    // It currently fails with "Cannot read properties of undefined (reading 'reduce')".
     compress({
       css: true,
       html: {
