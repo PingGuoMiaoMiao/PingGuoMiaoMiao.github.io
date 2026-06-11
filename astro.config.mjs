@@ -1,6 +1,5 @@
 import { defineConfig } from "astro/config";
 import preact from "@astrojs/preact";
-import sitemap from "@astrojs/sitemap";
 import compress from "astro-compress";
 
 // https://astro.build/config
@@ -8,11 +7,6 @@ export default defineConfig({
   site: "https://example.com", // 请替换为你的实际域名
   integrations: [
     preact(),
-    sitemap({
-      changefreq: 'weekly',
-      priority: 0.7,
-      lastmod: new Date(),
-    }),
     compress({
       css: true,
       html: {
